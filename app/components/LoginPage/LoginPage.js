@@ -23,6 +23,15 @@ class LoginPage extends Component {
     }
 }
 
+
+const styles = StyleSheet.create({
+  loginPage: {
+    backgroundColor: '#4286f4',
+    justifyContent: 'center',
+    alignItems: 'center'
+  }
+});
+
 function mapStateToProps(state) {
   return {
     login: state.loginReducer
@@ -30,12 +39,5 @@ function mapStateToProps(state) {
 }
 
 
-const styles = StyleSheet.create({
-    loginPage: {
-      backgroundColor: '#4286f4',
-      justifyContent: 'center',
-      alignItems: 'center'
-    }
-});
 
 export default connect(mapStateToProps)(LoginPage)
