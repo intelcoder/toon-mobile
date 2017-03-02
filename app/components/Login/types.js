@@ -1,0 +1,8 @@
+/**
+ * Created by fiddlest on 3/1/2017.
+ */
+export default {
+  REQUEST_TOKEN: 'REQUEST_TOKEN',
+  TOKEN_RECEIVED: 'TOKEN_RECEIVED',
+  REQUEST_TOKEN_FAIL: 'REQUEST_TOKEN_FAIL'
+}

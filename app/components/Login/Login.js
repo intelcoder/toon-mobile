@@ -8,9 +8,12 @@ import {
     TextInput,
     Dimensions,
     Button,
-    Keyboard
+    Keyboard,
+    NativeModules
 } from 'react-native';
 import React, {Component} from 'react';
+import {login} from './actions';
+import secret from '../../config/secret'
 import {vw, vh} from '../../utils/styleHelper';
 
 export default class Login extends Component {
@@ -21,21 +24,20 @@ export default class Login extends Component {
     };
 
     handleOnPress = async () => {
+     /* NativeModules.ToastAndroid.show('This is a toast with short duration', NativeModules.ToastAndroid.SHORT)*/;
       if(this.state.id && this.state.pwd){
         try {
-          let response = await fetch('http://192.168.2.39:9966/o/token/', {
+          const requestDetail = {
             method: 'POST',
             headers: {'Content-Type':'application/x-www-form-urlencoded'},
             body: JSON.stringify({
-              client_id: '',
+              client_id: secret.clientId,
               grant_type: 'password',
               username: this.state.id,
               password: this.state.pwd
             })
-          });
-          const responseJson = await response.json();
-          console.log(responseJson)
-
+          };
+          this.props.dispatch(login(requestDetail));
         } catch(err){
           console.log("error occurred", err)
         }
@@ -54,8 +56,8 @@ export default class Login extends Component {
     render() {
       const {width, height} = this.props;
       return (
-        <View style={{width: width * 0.8,height: height * 0.5 }}>
-          <View>
+        <View style={[styles.login, {width: width * 0.8, height: height * 0.5 }]}>
+          <View style={{marginTop:40}}>
             <TextInput
               placeholder="ID"
               onChangeText={this.handleIdInput}
@@ -71,6 +73,7 @@ export default class Login extends Component {
             <View style={styles.loginBtnContainer}>
               <Button
                 title="Login"
+                color={'red'}
                 onPress={this.handleOnPress}
               />
             </View>
@@ -82,7 +85,8 @@ export default class Login extends Component {
 
 
 const styles = StyleSheet.create({
-  inputContainer: {
+  login: {
+
   },
   btnContainer: {
     flex:1,
