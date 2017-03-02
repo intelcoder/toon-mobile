@@ -12,7 +12,6 @@ import Login from '../Login/Login';
 
 
 export default class LoginPage extends Component {
-
     render() {
       return (
         <View style={[styles.loginPage, {height: this.props.height}]}>

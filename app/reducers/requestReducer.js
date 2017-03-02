@@ -1,13 +1,12 @@
-/**
- * Created by fiddlest on 2/24/2017.
- */
+
 /**
  * This reducer takes care of  network request
  * @param state
  * @param action
  * @returns {*}
  */
-export const requestReducer = (state = requestInitState, action)=> {
+export default (state = {}, action)=> {
+  console.log(action)
   if(action.type === "FETCH_DATA"){
     return Object.assign({},state,{
       isFetching:true,

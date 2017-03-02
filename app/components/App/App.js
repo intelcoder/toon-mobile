@@ -7,18 +7,20 @@ import {
     View,
     Dimensions
 } from 'react-native';
+import { Provider, connect } from 'react-redux'
 import {Actions, Scene, Router} from 'react-native-router-flux';
 import LoginPage from '../LoginPage/LoginPage';
 import {Navigator} from 'react-native'
-
+import store from '../../store/store';
 
 
 const scenes = Actions.create(
     <Scene key="root">
-        <Scene key="login" component={LoginPage} title="Login"/>
+        <Scene key="login"  component={LoginPage} title="Login"/>
     </Scene>
 );
 
+const ConnectedRouter = connect()(Router)
 
 export default class App extends React.Component {
 
@@ -35,32 +37,12 @@ export default class App extends React.Component {
         })
     }
 
-    handleRender = (route, navigator) => {
-        return (
-            <View>
-                {
-                    React.cloneElement(
-                        this.getPage(route, navigator),
-                        {...this.state}
-                    )
-                }
-            </View>
-        )
-    };
-
-    getPage = (route, navigator) => {
-        if (route.title === 'home') {
-            return <LoginPage navigator={navigator} title={route.title}/>
-        }
-    };
-
-
     render() {
         return (
-                <Navigator
-                    initialRoute={{title: 'home', index: 0}}
-                    renderScene={this.handleRender}
-                />
+          <Provider store={store}>
+            <ConnectedRouter scenes={scenes} />
+          </Provider>
+
         )
     }
 }
