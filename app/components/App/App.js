@@ -2,6 +2,8 @@
  * Created by fiddlest on 2/23/2017.
  */
 
+//@flow;
+
 import React from 'react';
 import {
     View,
@@ -9,10 +11,10 @@ import {
 } from 'react-native';
 import { Provider, connect } from 'react-redux'
 import {Actions, Scene, Router} from 'react-native-router-flux';
-import LoginPage from '../LoginPage/LoginPage';
 import {Navigator} from 'react-native'
 import store from '../../store/store';
 
+import LoginPage from '../LoginPage/LoginPage';
 
 const scenes = Actions.create(
     <Scene key="root">
@@ -40,7 +42,7 @@ export default class App extends React.Component {
     render() {
         return (
           <Provider store={store}>
-            <ConnectedRouter scenes={scenes} />
+            <ConnectedRouter scenes={scenes} width={this.state.width} height={this.state.height}/>
           </Provider>
 
         )

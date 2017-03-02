@@ -4,8 +4,10 @@
 
 import {combineReducers} from 'redux';
 import requestReducer from './requestReducer';
+import loginReducer from './loginReducer';
 
 
 export default combineReducers({
-  requestReducer
+  requestReducer,
+  loginReducer
 })

@@ -8,17 +8,25 @@ import {
     StyleSheet,
 } from 'react-native'
 
+import {connect} from 'react-redux';
 import Login from '../Login/Login';
 
 
-export default class LoginPage extends Component {
+class LoginPage extends Component {
     render() {
+      console.log("LoginPage",this.props)
       return (
         <View style={[styles.loginPage, {height: this.props.height}]}>
-          <Login {...this.props}/>
+          <Login {...this.props} login ={this.props.login} />
         </View>
       )
     }
+}
+
+function mapStateToProps(state) {
+  return {
+    login: state.loginReducer
+  }
 }
 
 
@@ -29,3 +37,5 @@ const styles = StyleSheet.create({
       alignItems: 'center'
     }
 });
+
+export default connect(mapStateToProps)(LoginPage)
