@@ -21,7 +21,7 @@ import {vw, vh} from '../../utils/styleHelper';
 export default class Login extends Component {
 
     state = {
-      id: ' ',
+      id: '',
       pwd: ''
     };
 
