@@ -21,8 +21,8 @@ import {vw, vh} from '../../utils/styleHelper';
 export default class Login extends Component {
 
     state = {
-      id: 'fiddlesticks',
-      pwd: 'Tjdwns!@3'
+      id: '',
+      pwd: ''
     };
 
     handleOnPress = async () => {
