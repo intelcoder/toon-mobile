@@ -21,25 +21,23 @@ import {vw, vh} from '../../utils/styleHelper';
 export default class Login extends Component {
 
     state = {
-      id: '',
-      pwd: ''
+      id: 'fiddlesticks',
+      pwd: 'Tjdwns!@3'
     };
 
     handleOnPress = async () => {
       this.props.onPress(this.state.id, this.state.pwd);
     };
 
-    componentWillReceiveProps(nextProps){
-      const {hasToken, tokenReceivedAt} = this.props.login;
+    isTokenExpired = (tokenExpiredAt) => {
+      return tokenExpiredAt > moment().unix() + secret.expires_in;
+    };
+    componentWillUpdate(nextProps){
+      const {hasToken, tokenReceivedAt} = nextProps.login;
       if(hasToken && !this.isTokenExpired(tokenReceivedAt)){
         Actions.webtoon()
       }
     }
-
-    isTokenExpired = (tokenExpiredAt) => {
-      return tokenExpiredAt < moment().get('millisecond') + secret.expires_in;
-    };
-
 
     handleIdInput = (text) => {
       if(text) this.setState({id: text})
@@ -50,7 +48,6 @@ export default class Login extends Component {
     };
 
     render() {
-      console.log("login", this.props.login)
       const {width, height} = this.props;
       return (
         <View style={[styles.login, {width: width * 0.8, height: height * 0.5 }]}>
