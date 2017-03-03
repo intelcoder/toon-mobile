@@ -15,10 +15,12 @@ import {Navigator} from 'react-native'
 import store from '../../store/store';
 
 import LoginPage from '../LoginPage/LoginPage';
+import WebtoonPage from '../WebtoonPage/WebtoonPage';
 
 const scenes = Actions.create(
     <Scene key="root">
         <Scene key="login"  component={LoginPage} title="Login"/>
+        <Scene key="webtoon"  component={WebtoonPage}/>
     </Scene>
 );
 

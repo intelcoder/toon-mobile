@@ -20,7 +20,7 @@ export default (state = initState, action) => {
         isFetching: false,
         hasToken: true,
         status: 'success',
-        tokenReceivedAt: moment().get('millisecond'),
+        tokenReceivedAt: moment().unix(),
         tokenDetail: action.data
       }
     )

@@ -9,11 +9,13 @@ import {
     Dimensions,
     Button,
     Keyboard,
-    NativeModules
+
 } from 'react-native';
 import React, {Component} from 'react';
-import {login} from './actions';
-import secret from '../../config/secret'
+import moment from 'moment';
+import {Actions} from 'react-native-router-flux';
+
+import secret from '../../config/secret';
 import {vw, vh} from '../../utils/styleHelper';
 
 export default class Login extends Component {
@@ -24,26 +26,18 @@ export default class Login extends Component {
     };
 
     handleOnPress = async () => {
-     /* NativeModules.ToastAndroid.show('This is a toast with short duration', NativeModules.ToastAndroid.SHORT)*/;
-      if(this.state.id && this.state.pwd){
-        try {
-          const requestDetail = {
-            method: 'POST',
-            headers: {'Content-Type':'application/x-www-form-urlencoded'},
-            body: JSON.stringify({
-              client_id: secret.clientId,
-              grant_type: 'password',
-              username: this.state.id,
-              password: this.state.pwd
-            })
-          };
-          this.props.dispatch(login(requestDetail));
-        } catch(err){
-          console.log("error occurred", err)
-        }
-      }
+      this.props.onPress(this.state.id, this.state.pwd);
     };
 
+    isTokenExpired = (tokenExpiredAt) => {
+      return tokenExpiredAt > moment().unix() + secret.expires_in;
+    };
+    componentWillUpdate(nextProps){
+      const {hasToken, tokenReceivedAt} = nextProps.login;
+      if(hasToken && !this.isTokenExpired(tokenReceivedAt)){
+        Actions.webtoon()
+      }
+    }
 
     handleIdInput = (text) => {
       if(text) this.setState({id: text})
@@ -73,7 +67,6 @@ export default class Login extends Component {
             <View style={styles.loginBtnContainer}>
               <Button
                 title="Login"
-                color={'red'}
                 onPress={this.handleOnPress}
               />
             </View>
@@ -85,9 +78,7 @@ export default class Login extends Component {
 
 
 const styles = StyleSheet.create({
-  login: {
 
-  },
   btnContainer: {
     flex:1,
     flexDirection: 'column',
