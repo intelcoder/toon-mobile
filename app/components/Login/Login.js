@@ -9,11 +9,13 @@ import {
     Dimensions,
     Button,
     Keyboard,
-    NativeModules
+
 } from 'react-native';
 import React, {Component} from 'react';
-import {login} from './actions';
-import secret from '../../config/secret'
+import moment from 'moment';
+import {Actions} from 'react-native-router-flux';
+
+import secret from '../../config/secret';
 import {vw, vh} from '../../utils/styleHelper';
 
 export default class Login extends Component {
@@ -24,24 +26,18 @@ export default class Login extends Component {
     };
 
     handleOnPress = async () => {
-     /* NativeModules.ToastAndroid.show('This is a toast with short duration', NativeModules.ToastAndroid.SHORT)*/;
-      if(this.state.id && this.state.pwd){
-        try {
-          const requestDetail = {
-            method: 'POST',
-            headers: {'Content-Type':'application/x-www-form-urlencoded'},
-            body: JSON.stringify({
-              client_id: secret.clientId,
-              grant_type: 'password',
-              username: this.state.id,
-              password: this.state.pwd
-            })
-          };
-          this.props.dispatch(login(requestDetail));
-        } catch(err){
-          console.log("error occurred", err)
-        }
+      this.props.onPress(this.state.id, this.state.pwd);
+    };
+
+    componentWillReceiveProps(nextProps){
+      const {hasToken, tokenReceivedAt} = this.props.login;
+      if(hasToken && !this.isTokenExpired(tokenReceivedAt)){
+        Actions.webtoon()
       }
+    }
+
+    isTokenExpired = (tokenExpiredAt) => {
+      return tokenExpiredAt < moment().get('millisecond') + secret.expires_in;
     };
 
 
@@ -54,6 +50,7 @@ export default class Login extends Component {
     };
 
     render() {
+      console.log("login", this.props.login)
       const {width, height} = this.props;
       return (
         <View style={[styles.login, {width: width * 0.8, height: height * 0.5 }]}>
