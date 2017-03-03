@@ -35,7 +35,7 @@ export default class Login extends Component {
     componentWillUpdate(nextProps){
       const {hasToken, tokenReceivedAt} = nextProps.login;
       if(hasToken && !this.isTokenExpired(tokenReceivedAt)){
-        Actions.webtoon()
+        Actions.webtoon();
       }
     }
 

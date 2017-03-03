@@ -20,7 +20,7 @@ import WebtoonPage from '../WebtoonPage/WebtoonPage';
 const scenes = Actions.create(
     <Scene key="root">
         <Scene key="login"  component={LoginPage} title="Login"/>
-        <Scene key="webtoon"  component={WebtoonPage}/>
+        <Scene key="webtoon"  hideNavBar={true} component={WebtoonPage}/>
     </Scene>
 );
 
