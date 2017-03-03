@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
 });
 
 
-class WebtoonPage extends Component {
+class WebtoonPageContainer extends Component {
   state = {
     index: 0,
     routes: [
@@ -47,16 +47,19 @@ class WebtoonPage extends Component {
 
   render() {
     return (
-      <TabViewAnimated
-        style={styles.container}
-        navigationState={this.state}
-        renderScene={this._renderScene}
-        renderHeader={this._renderHeader}
-        onRequestChangeTab={this._handleChangeTab}
-      />
+      <View>
+        <TabViewAnimated
+          style={styles.container}
+          navigationState={this.state}
+          renderScene={this._renderScene}
+          renderHeader={this._renderHeader}
+          onRequestChangeTab={this._handleChangeTab}
+        />
+      </View>
+
     );
   }
 }
 
 
-export default WebtoonPage;
+export default WebtoonPageContainer;
