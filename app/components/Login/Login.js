@@ -67,7 +67,6 @@ export default class Login extends Component {
             <View style={styles.loginBtnContainer}>
               <Button
                 title="Login"
-                color={'red'}
                 onPress={this.handleOnPress}
               />
             </View>
@@ -79,9 +78,7 @@ export default class Login extends Component {
 
 
 const styles = StyleSheet.create({
-  login: {
 
-  },
   btnContainer: {
     flex:1,
     flexDirection: 'column',
