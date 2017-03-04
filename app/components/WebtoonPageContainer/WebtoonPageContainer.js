@@ -47,7 +47,6 @@ class WebtoonPageContainer extends Component {
 
   render() {
     return (
-      <View>
         <TabViewAnimated
           style={styles.container}
           navigationState={this.state}
@@ -55,8 +54,6 @@ class WebtoonPageContainer extends Component {
           renderHeader={this._renderHeader}
           onRequestChangeTab={this._handleChangeTab}
         />
-      </View>
-
     );
   }
 }
