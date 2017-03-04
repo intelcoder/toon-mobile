@@ -16,6 +16,7 @@ export default (state = initState, action) => {
   if (action.type === loginTypes.REQUEST_TOKEN) {
     return Object.assign({}, state, {isFetching: true})
   } else if (action.type === loginTypes.TOKEN_RECEIVED) {
+
     return Object.assign({}, state, {
         isFetching: false,
         hasToken: true,
