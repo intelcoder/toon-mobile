@@ -11,3 +11,22 @@ export const vh = percentageHeight => {
   return Dimensions.get('window').height * (percentageHeight / 100);
 };
 
+
+
+export const flex = (direction = 'row', justifyContent = 'initial', alignItem = 'initial') => {
+  return {
+    flex: 1,
+    flexDirection: direction,
+    justifyContent: justifyContent,
+    alignItem: alignItem
+  }
+};
+
+export const flexCenter = (direction = 'row') => {
+  return {
+    flex: 1,
+    flexDirection: direction,
+    justifyContent: 'center',
+    alignItem: 'center'
+  }
+};
