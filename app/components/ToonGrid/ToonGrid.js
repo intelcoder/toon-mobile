@@ -1,0 +1,49 @@
+/**
+ * Created by fiddlest on 3/6/2017.
+ */
+
+import React, {Component} from 'react';
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  ListView
+} from 'react-native';
+
+import ToonCard from '../ToonCard/ToonCard';
+import mockNaverList from '../../model/mockDataNaverList';
+
+export default class ToonGrid extends Component {
+
+  constructor(props){
+    super(props);
+    const ds = new ListView.DataSource({rowHasChanged : (r1, r2) => r1!=r2});
+    console.log(mockNaverList.filter((data)=> data.weekday==='mon'));
+    this.state = {
+      dataSource: ds.cloneWithRows(mockNaverList.filter((data)=> data.weekday==='mon').slice(0, 5))
+    }
+  }
+  render() {
+    const {width} = this.props;
+
+    return (
+      <ListView
+        contentContainerStyle={{
+          flexDirection: 'row',
+          flexWrap: 'wrap'}}
+        renderRow={(data)=>
+          <ToonCard
+            src={data.thumbnail_url}
+            title={data.title}
+            rating={data.rating}
+            author={data.author}
+            width={width /3}
+            height={width/3}
+          />
+        }
+        dataSource={this.state.dataSource}
+      />
+    )
+  }
+}
