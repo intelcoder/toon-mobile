@@ -12,12 +12,20 @@ import {
 } from 'react-native';
 
 
+
 const styles = StyleSheet.create({
   siteCard: {
+    borderRadius: 5,
     justifyContent: 'center',
     alignItems: 'center',
   },
+  siteName: {
+    textAlign:'center',
+    fontWeight:'bold',
+    fontSize: 18,
+    letterSpacing: 10
 
+  }
 });
 
 
@@ -27,7 +35,7 @@ export default class SiteCard extends Component {
 
     const {index} = this.props;
     this.state = {
-      slide: new Animated.ValueXY({x:0, y: 200}),
+      slide: new Animated.ValueXY({x:0, y: 150}),
       fade: new Animated.Value(0)
     };
     this.slideIn = Animated.timing(
@@ -73,7 +81,7 @@ export default class SiteCard extends Component {
           width: width,
           height: height
         }]}>
-        <Text style={{color: textColor, textAlign:'center'}}>{site}</Text>
+        <Text style={[styles.siteName,{color: textColor}]}>{site}</Text>
       </Animated.View>
     );
   }
@@ -89,8 +97,8 @@ SiteCard.propTypes = {
 
 SiteCard.defaultProps = {
   site: 'null',
-  backgroundColor: 'white',
-  textColor: 'black'
+  backgroundColor: 'black',
+  textColor: 'white'
 };
 
 

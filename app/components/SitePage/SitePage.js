@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 
 import SiteCard from '../SiteCard/SiteCard';
+import siteModel from '../../model/siteModel';
 
 const styles = StyleSheet.create({
   sitePage: {
@@ -25,24 +26,25 @@ export default class SitePage extends Component{
     super();
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.state = {
-      dataSource: ds.cloneWithRows( ['green', 'red','pink', 'green', 'red','pink','green', 'red']),
+      dataSource: ds.cloneWithRows(Object.keys(siteModel)),
     };
   }
 
   render() {
-    const {width, height} = this.props;
+    const {width} = this.props;
     const third = Math.floor((width /3.3));
     const margin = (width - (third * 3)) / 6;
     return (
       <ListView contentContainerStyle={styles.sitePage}
                 dataSource={this.state.dataSource}
-                renderRow={(rowData, secId, rowId) =>
+                renderRow={(site, secId, rowId) =>
                   <SiteCard index={rowId}
                             margin={margin}
-                            backgroundColor={rowData}
+                            site={siteModel[site].site}
+                            backgroundColor={siteModel[site].backgroundColor}
                             width={third}
-                            height={third} />
-
+                            height={third}
+                  />
                 }
       />
     )
