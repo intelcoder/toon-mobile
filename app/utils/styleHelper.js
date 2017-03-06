@@ -18,7 +18,7 @@ export const flex = (direction = 'row', justifyContent = 'initial', alignItem = 
     flex: 1,
     flexDirection: direction,
     justifyContent: justifyContent,
-    alignItem: alignItem
+    alignItems: alignItem
   }
 };
 
@@ -27,6 +27,6 @@ export const flexCenter = (direction = 'row') => {
     flex: 1,
     flexDirection: direction,
     justifyContent: 'center',
-    alignItem: 'center'
+    alignItems: 'center'
   }
 };

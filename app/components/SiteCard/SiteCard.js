@@ -11,21 +11,39 @@ import {
   Easing
 } from 'react-native';
 
-import {flexCenter} from '../../utils/styleHelper';
 
-const style = StyleSheet.create({
-  siteCard: flexCenter()
+
+const styles = StyleSheet.create({
+  siteCard: {
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  siteName: {
+    textAlign:'center',
+    fontWeight:'bold',
+    fontSize: 18,
+    letterSpacing: 10
+
+  }
 });
+
 
 export default class SiteCard extends Component {
   constructor(props){
     super(props);
+
+    const {index} = this.props;
+    this.state = {
+      slide: new Animated.ValueXY({x:0, y: 150}),
+      fade: new Animated.Value(0)
+    };
     this.slideIn = Animated.timing(
       this.state.slide,
       {
         toValue: {x: 0, y: 0},
-        duration: 2000,
-        delay: 1000,
+        duration: 500,
+        delay: index * 100,
         easing: Easing.in(Easing.ease)
       }
     );
@@ -33,14 +51,10 @@ export default class SiteCard extends Component {
       this.state.fade,
       {
         toValue: 1,
-        duration: 2000,
-        delay: 1000,
+        duration: 550,
+        delay: index * 100,
       }
     );
-    this.state = {
-      slide: new Animated.ValueXY({x:0, y: 200}),
-      fade: new Animated.Value(0)
-    }
   }
 
   componentDidMount(){
@@ -55,18 +69,19 @@ export default class SiteCard extends Component {
   };
 
   render() {
-    const {site, backgroundColor, textColor, width, height} = this.props;
+    const {site, backgroundColor, textColor, width, height, margin} = this.props;
     return (
       <Animated.View style={[
-        style.siteCard,
+        styles.siteCard,
         {
-          transform: this.state.slide.getTransactionWrappers(),
-          backgroundColor: backgroundColor,
+          transform: this.state.slide.getTranslateTransform(),
           opacity: this.state.fade,
+          margin:margin,
+          backgroundColor: backgroundColor,
           width: width,
           height: height
         }]}>
-        <Text style={{textColor}}>{site}</Text>
+        <Text style={[styles.siteName,{color: textColor}]}>{site}</Text>
       </Animated.View>
     );
   }
@@ -82,8 +97,8 @@ SiteCard.propTypes = {
 
 SiteCard.defaultProps = {
   site: 'null',
-  backgroundColor: 'white',
-  textColor: 'black'
+  backgroundColor: 'black',
+  textColor: 'white'
 };
 
 
