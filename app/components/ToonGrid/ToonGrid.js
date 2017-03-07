@@ -19,9 +19,8 @@ export default class ToonGrid extends Component {
   constructor(props){
     super(props);
     const ds = new ListView.DataSource({rowHasChanged : (r1, r2) => r1!=r2});
-    console.log(mockNaverList.filter((data)=> data.weekday==='mon'));
     this.state = {
-      dataSource: ds.cloneWithRows(mockNaverList.filter((data)=> data.weekday==='mon').slice(0, 5))
+      dataSource: ds.cloneWithRows(mockNaverList.filter((data)=> data.weekday==='mon'))
     }
   }
   render() {

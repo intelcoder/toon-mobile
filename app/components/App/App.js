@@ -21,10 +21,11 @@ import ToonGrid from '../ToonGrid/ToonGrid';
 
 const scenes = Actions.create(
     <Scene key="root">
+        <Scene key="webtoon"  hideNavBar={true} component={WebtoonPageContainer}/>
         <Scene key="toonGrid"  hideNavBar={true} component={ToonGrid} title="Toon grid"/>
         <Scene key="toonSite"  hideNavBar={true} component={SitePage} title="Toon Site"/>
         <Scene key="login"  component={LoginPage} title="Login"/>
-        <Scene key="webtoon"  hideNavBar={true} component={WebtoonPageContainer}/>
+
     </Scene>
 );
 
