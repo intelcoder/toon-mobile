@@ -8,7 +8,8 @@ import {
   Text,
   StyleSheet,
   Animated,
-  Easing
+  Easing,
+  TouchableOpacity
 } from 'react-native';
 
 
@@ -16,8 +17,6 @@ import {
 const styles = StyleSheet.create({
   siteCard: {
     borderRadius: 5,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   siteName: {
     textAlign:'center',
@@ -68,20 +67,37 @@ export default class SiteCard extends Component {
     ]).start();
   };
 
+  handleOnPress = () => {
+    const {handleOnPress, site} = this.props;
+    handleOnPress(site);
+  };
+
   render() {
     const {site, backgroundColor, textColor, width, height, margin} = this.props;
     return (
-      <Animated.View style={[
-        styles.siteCard,
-        {
-          transform: this.state.slide.getTranslateTransform(),
-          opacity: this.state.fade,
-          margin:margin,
-          backgroundColor: backgroundColor,
-          width: width,
-          height: height
-        }]}>
-        <Text style={[styles.siteName,{color: textColor}]}>{site}</Text>
+      <Animated.View
+
+        style={[
+          styles.siteCard,
+          {
+            transform: this.state.slide.getTranslateTransform(),
+            opacity: this.state.fade,
+            margin: margin,
+            backgroundColor: backgroundColor,
+            width: width,
+            height: height
+          }]}>
+        <TouchableOpacity
+          style={{
+            width: width,
+            height: height,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+          onPress={this.handleOnPress}
+        >
+          <Text style={[styles.siteName,{color: textColor}]}>{site}</Text>
+        </TouchableOpacity >
       </Animated.View>
     );
   }
@@ -92,13 +108,15 @@ SiteCard.propTypes = {
   backgroundColor: PropTypes.string,
   textColor: PropTypes.string,
   width: PropTypes.number.isRequired,
-  height: PropTypes.number.isRequired
+  height: PropTypes.number.isRequired,
+  handleOnPress: PropTypes.func
 };
 
 SiteCard.defaultProps = {
   site: 'null',
   backgroundColor: 'black',
-  textColor: 'white'
+  textColor: 'white',
+  handleOnPress: ()=> console.log("please provide func")
 };
 
 

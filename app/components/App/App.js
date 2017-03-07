@@ -21,8 +21,10 @@ import SitePage from '../SitePage/SitePage';
 const scenes = Actions.create(
     <Scene key="root">
         <Scene key="toonSite"  hideNavBar={true} component={SitePage} title="Toon Site"/>
-        <Scene key="login"  component={LoginPage} title="Login"/>
         <Scene key="webtoon"  hideNavBar={true} component={WebtoonPageContainer}/>
+
+        <Scene key="webtoon"  hideNavBar={true} component={WebtoonPageContainer}/>
+        <Scene key="login"  component={LoginPage} title="Login"/>
     </Scene>
 );
 
