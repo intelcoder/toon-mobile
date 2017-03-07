@@ -17,12 +17,11 @@ import store from '../../store/store';
 import LoginPage from '../LoginPage/LoginPage';
 import WebtoonPageContainer from '../WebtoonPageContainer/WebtoonPageContainer';
 import SitePage from '../SitePage/SitePage';
-import ToonGrid from '../ToonGrid/ToonGrid';
 
 const scenes = Actions.create(
     <Scene key="root">
-        <Scene key="webtoon"  hideNavBar={true} component={WebtoonPageContainer}/>
         <Scene key="toonSite"  hideNavBar={true} component={SitePage} title="Toon Site"/>
+        <Scene key="webtoon"  hideNavBar={true} component={WebtoonPageContainer}/>
         <Scene key="login"  component={LoginPage} title="Login"/>
 
     </Scene>
