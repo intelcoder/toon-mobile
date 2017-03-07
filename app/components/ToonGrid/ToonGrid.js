@@ -2,7 +2,7 @@
  * Created by fiddlest on 3/6/2017.
  */
 
-import React, {Component} from 'react';
+import React, {Component, PropTypes} from 'react';
 import {
   View,
   Text,
@@ -38,7 +38,7 @@ export default class ToonGrid extends Component {
             title={data.title}
             rating={data.rating}
             author={data.author}
-            width={width /3}
+            width={width/3}
             height={width/3}
           />
         }
@@ -47,3 +47,9 @@ export default class ToonGrid extends Component {
     )
   }
 }
+
+/*
+ToonGrid.propTypes = {
+  toonList: PropTypes.array.isRequired,
+  width: PropTypes.number.isRequired
+};*/

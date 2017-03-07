@@ -2,8 +2,9 @@
  * Created by fiddlest on 3/4/2017.
  */
 
+//@flow
 
-import React, {Component} from 'react';
+import React, {Component, PropTypes} from 'react';
 import {
   View,
   Text,
@@ -18,7 +19,7 @@ export default class ToonCard extends Component {
     return (
       <View style={[styles.cardContainer,{width: width, height: height * 1.2}]}>
         <View style={styles.imageContainer}>
-          <Image style={styles.cardImage} source={{uri: src}}/>
+          <Image style={styles.cardImage} source={{uri: src}} accessibilityLabel={title + ' 사진'} />
         </View>
 
         <View style={styles.textContainer}>
@@ -30,6 +31,14 @@ export default class ToonCard extends Component {
     )
   }
 }
+
+ToonCard.propTypes = {
+  src: PropTypes.string.isRequired,
+  rating: PropTypes.number.isRequired,
+  title: PropTypes.string.isRequired,
+  width: PropTypes.number.isRequired,
+  height: PropTypes.number.isRequired
+};
 
 
 const styles = StyleSheet.create({
@@ -56,5 +65,4 @@ const styles = StyleSheet.create({
   author: {
     color: '#666666'
   }
-
 });
