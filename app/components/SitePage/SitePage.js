@@ -2,6 +2,8 @@
  * Created by fiddlest on 3/4/2017.
  */
 import React, {Component, PropTypes} from 'react';
+
+import {Actions} from 'react-native-router-flux';
 import {
   View,
   Text,
@@ -30,6 +32,10 @@ export default class SitePage extends Component{
     };
   }
 
+  handleOnPress = (site) => {
+    Actions.webtoon({site: site})
+  };
+
   render() {
     const {width} = this.props;
     const third = Math.floor((width /3.3));
@@ -44,6 +50,7 @@ export default class SitePage extends Component{
                             backgroundColor={siteModel[site].backgroundColor}
                             width={third}
                             height={third}
+                            handleOnPress={this.handleOnPress}
                   />
                 }
       />
