@@ -14,5 +14,9 @@ export default {
   rezin: {
     site: 'Rezin',
     backgroundColor: '#E50020'
+  },
+  kakao: {
+    site: 'Kakao',
+    backgroundColor: '#F0CC18'
   }
 }
