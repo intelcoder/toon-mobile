@@ -10,7 +10,7 @@ import ToonGird from '../ToonGrid/ToonGrid';
 import fetchIfNeeded from '../../actions/fetchAction';
 import {createRequestUrl} from '../../utils/index';
 import {urlTypes} from '../../model/data';
-import {createUrlQuery, indexToweekday} from '../../utils/index';
+import {weekdays} from '../../utils/index';
 
 const styles = StyleSheet.create({
   container: {
@@ -40,19 +40,17 @@ class WebtoonPageContainer extends Component {
   };
 
   componentDidMount() {
-    this.fetchWebtoonData(this.props);
+    const {site, loginInfo} = this.props;
+    const {index} = this.state;
+    this.fetchWebtoonData(site, loginInfo, index);
   }
 
-  fetchWebtoonData = ({dispatch, site, loginInfo, index}) => {
+  fetchWebtoonData = (site, loginInfo, index) => {
+    const {dispatch} = this.props;
     //fetch monday toon list
-    console.log('fetchWebtoonData',index)
     if(loginInfo.hasToken){
       let requestUrl = createRequestUrl(urlTypes.LIST, site);
       const {token_type, access_token} = loginInfo.tokenDetail;
-      const query = {
-        weekday: indexToweekday(index)
-      };
-      requestUrl = requestUrl + '?' + createUrlQuery(query);
       dispatch(
         fetchIfNeeded(requestUrl , {
             method: 'GET',
@@ -64,12 +62,6 @@ class WebtoonPageContainer extends Component {
       )
     }
   };
-  componentWillUpdate(nextProps, nextState){
-    if(this.state.index !== nextState.index){
-      console.log('componentWillUpdate',nextState.index)
-      this.fetchWebtoonData({...nextProps, ...nextState})
-    }
-  }
 
   _handleChangeTab = (index) => {
     this.setState({index});
@@ -79,21 +71,29 @@ class WebtoonPageContainer extends Component {
     return <TabBar {...props} />;
   };
 
-
-  _renderScene = ({route}) => {
-    const {webtoonList} = this.props;
-    return <ToonGird webtoonList={webtoonList} width={this.props.width}/>;
+  _renderScene = ({webtoonList, width, isFetching}) => {
+    return ({index})=>{
+      return <ToonGird
+        index={index}
+        webtoonList={webtoonList.filter(webtoon=> webtoon.weekday == weekdays[index])}
+        width={width}
+        isFetching={isFetching}
+      />
+    }
   };
 
   render() {
+    const renderScene = this._renderScene(this.props);
     return (
-      <TabViewAnimated
-        style={styles.container}
-        navigationState={this.state}
-        renderScene={this._renderScene}
-        renderHeader={this._renderHeader}
-        onRequestChangeTab={this._handleChangeTab}
-      />
+      <View style={{flex:1}}>
+        <TabViewAnimated
+          style={styles.container}
+          navigationState={this.state}
+          renderScene={renderScene}
+          renderHeader={this._renderHeader}
+          onRequestChangeTab={this._handleChangeTab}
+        />
+      </View>
     );
   }
 }
@@ -103,7 +103,8 @@ const mapStateToProps = (state) => {
   const {loginReducer, fetchReducer} = state;
   return {
     loginInfo: loginReducer,
-    webtoonList: fetchReducer.data
+    webtoonList: fetchReducer.data,
+    isFetching: fetchReducer.isFetching
   }
 };
 

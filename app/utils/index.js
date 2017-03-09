@@ -5,6 +5,8 @@ import {urlTypes} from '../model/data';
 import secret from '../config/secret';
 import queryString from 'query-string';
 
+export const weekdays = ['mon','tue','wed','thu','fri','sat','sun'];
+
 export const indexToweekday = (index) => {
   switch(index){
     case 0: return 'mon';
