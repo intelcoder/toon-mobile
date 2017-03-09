@@ -43,7 +43,7 @@ export default class Login extends Component {
       ){
         this.saveTokenDetailInDb(tokenDetail)
           .then(() => {
-            Actions.webtoon();
+            Actions.webtoon({site:'naver'});
           })
           .catch((err) => {
             console.log("error occurred on saving data", err);

@@ -61,8 +61,13 @@ const fetchToken = (requestDetail) => {
   return (dispatch ) => {
     dispatch(requestToken());
     return fetch(secret.tokenUrl, requestDetail)
-      .then(response => response.json())
-      .then(json => dispatch(tokenReceived(json)))
+      .then(response => {
+        if(response.status === 200) return response.json();
+      })
+      .then(json => {
+        if(json) dispatch(tokenReceived(json));
+        dispatch(requestFail("Error occurred in login"));
+      })
       .catch(err => {
         dispatch(requestFail(err));
       })

@@ -1,10 +1,16 @@
 /**
  * Created by fiddlest on 3/2/2017.
  */
-import React, { Component } from 'react';
-import { View, StyleSheet } from 'react-native';
-import { TabViewAnimated, TabBar } from 'react-native-tab-view';
+import React, {Component} from 'react';
+import {View, StyleSheet} from 'react-native';
+import {TabViewAnimated, TabBar} from 'react-native-tab-view';
+import {connect} from 'react-redux';
+
 import ToonGird from '../ToonGrid/ToonGrid';
+import fetchIfNeeded from '../../actions/fetchAction';
+import {createRequestUrl} from '../../utils/index';
+import {urlTypes} from '../../model/data';
+import {weekdays} from '../../utils/index';
 
 const styles = StyleSheet.create({
   container: {
@@ -22,57 +28,84 @@ class WebtoonPageContainer extends Component {
   state = {
     index: 0,
     routes: [
-      { key: '1', title: '월' },
-      { key: '2', title: '화' },
-      { key: '3', title: '수' },
-      { key: '4', title: '목' },
-      { key: '5', title: '금' },
-      { key: '6', title: '토' },
-      { key: '7', title: '일' },
+      {key: '1', title: '월'},
+      {key: '2', title: '화'},
+      {key: '3', title: '수'},
+      {key: '4', title: '목'},
+      {key: '5', title: '금'},
+      {key: '6', title: '토'},
+      {key: '7', title: '일'},
     ],
+    site: this.props.site
+  };
+
+  componentDidMount() {
+    const {site, loginInfo} = this.props;
+    const {index} = this.state;
+    this.fetchWebtoonData(site, loginInfo, index);
+  }
+
+  fetchWebtoonData = (site, loginInfo, index) => {
+    const {dispatch} = this.props;
+    //fetch monday toon list
+    if(loginInfo.hasToken){
+      let requestUrl = createRequestUrl(urlTypes.LIST, site);
+      const {token_type, access_token} = loginInfo.tokenDetail;
+      dispatch(
+        fetchIfNeeded(requestUrl , {
+            method: 'GET',
+            headers: {
+              Authorization: token_type.toLowerCase() + ' ' + access_token
+            }
+          }
+        )
+      )
+    }
   };
 
   _handleChangeTab = (index) => {
-    this.setState({ index });
+    this.setState({index});
   };
 
   _renderHeader = (props) => {
     return <TabBar {...props} />;
   };
 
-  _renderScene = ({ route }) => {
-    switch (route.key) {
-      case '1':
-        return <ToonGird  width={this.props.width}/>;
-      case '2':
-        return <View style={[ styles.page, { backgroundColor: '#673ab7' } ]} />;
-      case '3':
-        return <View style={[ styles.page, { backgroundColor: '#ff4081' } ]} />;
-      case '4':
-        return <View style={[ styles.page, { backgroundColor: '#673ab7' } ]} />;
-      case '5':
-        return <View style={[ styles.page, { backgroundColor: '#ff4081' } ]} />;
-      case '6':
-        return <View style={[ styles.page, { backgroundColor: '#673ab7' } ]} />;
-      case '7':
-        return <View style={[ styles.page, { backgroundColor: '#673ab7' } ]} />;
-      default:
-        return null;
+  _renderScene = ({webtoonList, width, isFetching}) => {
+    return ({index})=>{
+      return <ToonGird
+        index={index}
+        webtoonList={webtoonList.filter(webtoon=> webtoon.weekday == weekdays[index])}
+        width={width}
+        isFetching={isFetching}
+      />
     }
   };
 
   render() {
+    const renderScene = this._renderScene(this.props);
     return (
+      <View style={{flex:1}}>
         <TabViewAnimated
           style={styles.container}
           navigationState={this.state}
-          renderScene={this._renderScene}
+          renderScene={renderScene}
           renderHeader={this._renderHeader}
           onRequestChangeTab={this._handleChangeTab}
         />
+      </View>
     );
   }
 }
 
 
-export default WebtoonPageContainer;
+const mapStateToProps = (state) => {
+  const {loginReducer, fetchReducer} = state;
+  return {
+    loginInfo: loginReducer,
+    webtoonList: fetchReducer.data,
+    isFetching: fetchReducer.isFetching
+  }
+};
+
+export default connect(mapStateToProps)(WebtoonPageContainer);

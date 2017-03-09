@@ -3,11 +3,11 @@
  */
 
 import {combineReducers} from 'redux';
-import requestReducer from './requestReducer';
+import fetchReducer from './fetchReducer';
 import loginReducer from './loginReducer';
 
 
 export default combineReducers({
-  requestReducer,
+  fetchReducer,
   loginReducer
 })
