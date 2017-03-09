@@ -33,7 +33,7 @@ export default class SitePage extends Component{
   }
 
   handleOnPress = (site) => {
-    Actions.webtoon({site: site})
+    Actions.webtoon({site: site.toLowerCase()})
   };
 
   render() {

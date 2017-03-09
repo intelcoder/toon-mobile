@@ -20,29 +20,45 @@ export default class ToonGrid extends Component {
     super(props);
     const ds = new ListView.DataSource({rowHasChanged : (r1, r2) => r1!=r2});
     this.state = {
-      dataSource: ds.cloneWithRows(mockNaverList.filter((data)=> data.weekday==='mon'))
+      dataSource: ds.cloneWithRows(this.props.webtoonList)
     }
   }
-  render() {
-    const {width} = this.props;
 
+  componentWillUpdate(nextProps){
+    if(this.props.webtoonList !== nextProps.webtoonList){
+      const ds = new ListView.DataSource({rowHasChanged : (r1, r2) => r1!=r2});
+      this.setState({
+        dataSource: ds.cloneWithRows(nextProps.webtoonList)
+      })
+    }
+  }
+
+  render() {
+    const {width,webtoonList} = this.props;
     return (
-      <ListView
-        contentContainerStyle={{
-          flexDirection: 'row',
-          flexWrap: 'wrap'}}
-        renderRow={(data)=>
-          <ToonCard
-            src={data.thumbnail_url}
-            title={data.title}
-            rating={data.rating}
-            author={data.author}
-            width={width/3}
-            height={width/3}
+      <View>
+        {
+          webtoonList.length > 0 &&
+          <ListView
+            contentContainerStyle={{
+              flexDirection: 'row',
+              flexWrap: 'wrap'}}
+            renderRow={(data)=>
+              <ToonCard
+                src={data.thumbnail_url}
+                title={data.title}
+                rating={data.rating}
+                author={data.author}
+                width={width/3}
+                height={width/3}
+              />
+            }
+            dataSource={this.state.dataSource}
           />
         }
-        dataSource={this.state.dataSource}
-      />
+
+      </View>
+
     )
   }
 }
