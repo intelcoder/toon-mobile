@@ -62,11 +62,14 @@ const fetchToken = (requestDetail) => {
     dispatch(requestToken());
     return fetch(secret.tokenUrl, requestDetail)
       .then(response => {
-        if(response.status === 200) return response.json();
+        return response.json();
       })
-      .then(json => {
-        if(json) dispatch(tokenReceived(json));
-        dispatch(requestFail("Error occurred in login"));
+      .then(response => {
+        if(response.error){
+          return dispatch(requestFail('Login Failed with: ' + response.error_description));
+        }
+        if(response) dispatch(tokenReceived(response));
+
       })
       .catch(err => {
         dispatch(requestFail(err));
