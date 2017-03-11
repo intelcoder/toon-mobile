@@ -2,7 +2,7 @@
  * Created by fiddlest on 3/2/2017.
  */
 import React, {Component} from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, ToolbarAndroid } from 'react-native';
 import {TabViewAnimated, TabBar} from 'react-native-tab-view';
 import {connect} from 'react-redux';
 
@@ -10,7 +10,10 @@ import ToonGird from '../ToonGrid/ToonGrid';
 import fetchIfNeeded from '../../actions/fetchAction';
 import {createRequestUrl} from '../../utils/index';
 import {urlTypes} from '../../model/data';
+import siteModel from '../../model/siteModel';
 import {weekdays} from '../../utils/index';
+var nativeImageSource = require('nativeImageSource');
+
 
 const styles = StyleSheet.create({
   container: {
@@ -42,7 +45,10 @@ class WebtoonPageContainer extends Component {
   componentDidMount() {
     const {site, loginInfo} = this.props;
     const {index} = this.state;
-    this.fetchWebtoonData(site, loginInfo, index);
+    setTimeout(() => {
+      this.fetchWebtoonData(site, loginInfo, index);
+    }, 1000)
+
   }
 
   fetchWebtoonData = (site, loginInfo, index) => {
@@ -62,7 +68,6 @@ class WebtoonPageContainer extends Component {
       )
     }
   };
-
   _handleChangeTab = (index) => {
     this.setState({index});
   };
@@ -84,8 +89,19 @@ class WebtoonPageContainer extends Component {
 
   render() {
     const renderScene = this._renderScene(this.props);
+    const site = this.state.site;
     return (
       <View style={{flex:1}}>
+        <ToolbarAndroid
+          title={site.toUpperCase()}
+          style={{
+            height: 56,
+            backgroundColor: siteModel[site.toLowerCase()].backgroundColor,
+          }}
+          titleColor='white'
+          subtitleColor='white'
+          actions={toolbarActions}
+        />
         <TabViewAnimated
           style={styles.container}
           navigationState={this.state}
@@ -98,6 +114,13 @@ class WebtoonPageContainer extends Component {
   }
 }
 
+var toolbarActions = [
+  {title: 'Naver'},
+  {title: 'Daum'},
+  {title: 'Rezin'},
+  {title: 'Kakao'},
+
+];
 
 const mapStateToProps = (state) => {
   const {loginReducer, fetchReducer} = state;

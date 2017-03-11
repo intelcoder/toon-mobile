@@ -5,38 +5,40 @@ import React, { Component } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
 
-class ActivityIndicator extends Component {
+export default class WebtoonActivityIndicator extends Component {
 
   type = [];
   state = {
-    animating: true,
+    animating: false,
   };
 
-  getStyleByType = (type) => {
-
-  };
 
   render() {
-    const {type, size, customStyle} = this.props;
-
+    const {type, size, customStyle, color, animating} = this.props;
     return (
       <ActivityIndicator
-        animating={this.state.animating}
-        style={[styles.indicatorCenter,customStyle,{}]}
+        animating={animating}
+        style={[styles.indicatorCenter,customStyle]}
         size={size}
+        color={color}
       />
     )
   }
-
 }
 
 const styles = StyleSheet.create({
   indicatorCenter: {
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   fullCenter: {
     flex:1,
   },
-
 });
+
+WebtoonActivityIndicator.defaultProps = {
+  customStyle: {},
+  size: 'small',
+  color: ''
+
+};
