@@ -57,6 +57,7 @@ class WebtoonPageContainer extends Component {
     if(loginInfo.hasToken){
       let requestUrl = createRequestUrl(urlTypes.LIST, site);
       const {token_type, access_token} = loginInfo.tokenDetail;
+      console.log('fetchWebtoonData',requestUrl)
       dispatch(
         fetchIfNeeded(requestUrl , {
             method: 'GET',
@@ -67,6 +68,16 @@ class WebtoonPageContainer extends Component {
         )
       )
     }
+  };
+
+  _onActionSelected  = (position) => {
+    this.setState({
+      site: toolbarActions[position].title.toLowerCase()
+    }, ()=> {
+      this.fetchWebtoonData(this.state.site, this.props.loginInfo, this.state.index)
+    });
+
+
   };
   _handleChangeTab = (index) => {
     this.setState({index});
@@ -98,6 +109,7 @@ class WebtoonPageContainer extends Component {
             height: 56,
             backgroundColor: siteModel[site.toLowerCase()].backgroundColor,
           }}
+          onActionSelected={this._onActionSelected}
           titleColor='white'
           subtitleColor='white'
           actions={toolbarActions}
