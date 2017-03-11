@@ -52,8 +52,14 @@ export default class Login extends Component {
               console.log("error occurred on saving data", err);
             })
         }
+
         if(error){
-          ToastAndroid.show(error, ToastAndroid.SHORT )
+          if(error.message){
+            ToastAndroid.show(error.message, ToastAndroid.SHORT )
+          }else {
+            ToastAndroid.show(error, ToastAndroid.SHORT )
+          }
+
         }
       }
     }

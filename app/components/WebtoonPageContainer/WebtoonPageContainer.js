@@ -68,6 +68,16 @@ class WebtoonPageContainer extends Component {
       )
     }
   };
+
+  _onActionSelected  = (position) => {
+    this.setState({
+      site: toolbarActions[position].title.toLowerCase()
+    }, ()=> {
+      this.fetchWebtoonData(this.state.site, this.props.loginInfo, this.state.index)
+    });
+
+
+  };
   _handleChangeTab = (index) => {
     this.setState({index});
   };
@@ -98,6 +108,7 @@ class WebtoonPageContainer extends Component {
             height: 56,
             backgroundColor: siteModel[site.toLowerCase()].backgroundColor,
           }}
+          onActionSelected={this._onActionSelected}
           titleColor='white'
           subtitleColor='white'
           actions={toolbarActions}
