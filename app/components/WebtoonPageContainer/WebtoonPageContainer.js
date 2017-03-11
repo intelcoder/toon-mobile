@@ -57,7 +57,6 @@ class WebtoonPageContainer extends Component {
     if(loginInfo.hasToken){
       let requestUrl = createRequestUrl(urlTypes.LIST, site);
       const {token_type, access_token} = loginInfo.tokenDetail;
-      console.log('fetchWebtoonData',requestUrl)
       dispatch(
         fetchIfNeeded(requestUrl , {
             method: 'GET',
