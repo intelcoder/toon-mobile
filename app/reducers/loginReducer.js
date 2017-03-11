@@ -9,12 +9,13 @@ const initState = {
   isFetching: false,
   tokenReceivedAt: null,
   status: false,
-  tokenDetail: {}
+  tokenDetail: {},
+  error:''
 };
 
 export default (state = initState, action) => {
   if (action.type === loginTypes.REQUEST_TOKEN) {
-    return Object.assign({}, state, {isFetching: true})
+    return Object.assign({}, state, {isFetching: true, error: ''})
   } else if (action.type === loginTypes.TOKEN_RECEIVED) {
 
     return Object.assign({}, state, {
@@ -22,13 +23,15 @@ export default (state = initState, action) => {
         hasToken: true,
         status: 'success',
         tokenReceivedAt: moment().unix(),
-        tokenDetail: action.data
+        tokenDetail: action.data,
+        error:''
       }
     )
   } else if (action.type === loginTypes.REQUEST_TOKEN_FAIL) {
     return Object.assign({}, state, {
       status: 'fail',
-      isFetching: false
+      isFetching: false,
+      error: action.error
     })
   }
 
