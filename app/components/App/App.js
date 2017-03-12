@@ -17,9 +17,11 @@ import store from '../../store/store';
 import LoginPage from '../LoginPage/LoginPage';
 import WebtoonPageContainer from '../WebtoonPageContainer/WebtoonPageContainer';
 import SitePage from '../SitePage/SitePage';
+import ModelTest from '../ModelTest/ModelTest';
 
 const scenes = Actions.create(
     <Scene key="root">
+        <Scene key="test" hideNavBar={true} component={ModelTest} title="test"/>
         <Scene key="login"  component={LoginPage} title="Login"/>
         <Scene key="toonSite"  hideNavBar={true} component={SitePage} title="Toon Site"/>
         <Scene key="webtoon"  hideNavBar={true} component={WebtoonPageContainer}/>
