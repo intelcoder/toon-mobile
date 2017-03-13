@@ -61,7 +61,7 @@ export default class ToonGrid extends Component {
       >
           <ListView
             enableEmptySections={true}
-
+            dataSource={this.state.dataSource}
             contentContainerStyle={{
               flexDirection: 'row',
               flexWrap: 'wrap'}}
@@ -75,7 +75,6 @@ export default class ToonGrid extends Component {
                 height={width/3}
               />
             }
-            dataSource={this.state.dataSource}
           />
       </Animated.View>
 
