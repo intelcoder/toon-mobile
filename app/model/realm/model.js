@@ -5,6 +5,7 @@ const Model = (realm) => {
   };
   return {
     create: create(state),
+    bulkCreate: bulkCreate(state),
     getById: getById(state),
   }
 };
@@ -14,6 +15,16 @@ const create = (state) => {
       state.realm.write(()=> {
         state.realm.create(schemaName, data);
       });
+  }
+};
+
+const bulkCreate = (state) => {
+  return (schemaName, listOfData) => {
+    listOfData.forEach((list)=>{
+      state.realm.write(()=> {
+        state.realm.create(schemaName, list);
+      });
+    })
   }
 };
 
