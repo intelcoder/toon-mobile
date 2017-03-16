@@ -5,12 +5,7 @@
 //@flow
 
 import React, {Component, PropTypes} from 'react';
-import {
-  View,
-  Text,
-  Image,
-  StyleSheet
-} from 'react-native';
+import {View, Text, Image, StyleSheet} from 'react-native';
 
 export default class ToonCard extends Component {
 
@@ -53,7 +48,6 @@ const styles = StyleSheet.create({
   textContainer: {
     backgroundColor: '#f7f8f9',
     paddingBottom: 5
-
   },
   title: {
     marginTop: 3,

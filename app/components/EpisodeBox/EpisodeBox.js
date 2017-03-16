@@ -1,5 +1,6 @@
 /**
  * Created by fiddlest on 3/12/2017.
+ * @flow
  */
 import React, {Component, PropTypes} from 'react';
 import {
@@ -19,27 +20,22 @@ const Title = styled.Text`
   marginBottom: 10
 `;
 
-export default class EpisodeBox extends Component {
-
-  render() {
-    const {width} = Dimensions.get('window');
-    const {episode} = this.props;
-    return (
-      <View style={[styles.episodeBox, {height: 100, width: width}]}>
-        <View style={{flex:1, flexDirection: 'row'}}>
-          <View style={styles.imageContainer}>
-            <Image style={styles.image} source={{uri: episode.thumbnail_url, width: 120, height: 100}}/>
-          </View>
-          <View style={styles.detailContainer}>
-            <Title>{episode.episode_title}</Title>
-            <Text>{episode.rating}</Text>
-            <Text>{moment(episode.uploaded_at).format('YYYY-MM-DD')}</Text>
-          </View>
+const EpisodeBox = (width: number, episode: Object) => {
+  return (
+    <View style={[styles.episodeBox, {height: 100, width: width}]}>
+      <View style={{flex:1, flexDirection: 'row'}}>
+        <View style={styles.imageContainer}>
+          <Image style={styles.image} source={{uri: episode.thumbnail_url, width: 120, height: 100}}/>
+        </View>
+        <View style={styles.detailContainer}>
+          <Title>{episode.episode_title}</Title>
+          <Text>{episode.rating}</Text>
+          <Text>{moment(episode.uploaded_at).format('YYYY-MM-DD')}</Text>
         </View>
       </View>
-    )
-  }
-}
+    </View>
+  )
+};
 
 
 const styles = StyleSheet.create({
@@ -60,3 +56,5 @@ const styles = StyleSheet.create({
     paddingTop: 10
   },
 });
+
+export default EpisodeBox;
