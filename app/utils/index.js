@@ -1,5 +1,6 @@
 /**
  * Created by fiddlest on 3/8/2017.
+ * @flow
  */
 import {urlTypes} from '../model/data';
 import secret from '../config/secret';
@@ -35,4 +36,3 @@ export const createRequestUrl = (type, site, id = null, episode = null) => {
 export const createUrlQuery = (params) => {
   return queryString.stringify(params);
 };
-
