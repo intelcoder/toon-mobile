@@ -25,6 +25,7 @@ const EpisodeSchema = {
 
 const WebtoonSchema = {
     name: 'Webtoon',
+    primaryKey:'toon_id',
     properties: {
         toon_id: {type: 'string'},
         title: {type: 'string'},
