@@ -10,11 +10,8 @@ import {
   PermissionsAndroid
 } from 'react-native';
 import toonList from '../../model/mockDataNaverList';
-import Model, {getByFilter} from '../../model/model';
 import RNFetchBlob from 'react-native-fetch-blob'
 import Promise from 'bluebird';
-import Realm from 'realm';
-import moment from 'moment';
 
 export default class ModelTest extends Component {
 
@@ -22,7 +19,9 @@ export default class ModelTest extends Component {
     this.requestReadPermission();
     this.requestWritePermission();
 
+
   }
+
 
   test = async ()=> {
     let dirs = RNFetchBlob.fs.dirs;
