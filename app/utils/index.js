@@ -5,8 +5,18 @@
 import {urlTypes} from '../model/data';
 import secret from '../config/secret';
 import queryString from 'query-string';
+import moment from 'moment';
 
 export const weekdays = ['mon','tue','wed','thu','fri','sat','sun'];
+
+export const isTokenExpired = (tokenExpireAt, expiresIn) => {
+  if(tokenExpireAt){
+    return tokenExpireAt > moment().unix() + expiresIn;
+  }
+  return true;
+};
+
+
 
 export const indexToweekday = (index) => {
   switch(index){
@@ -36,3 +46,4 @@ export const createRequestUrl = (type, site, id = null, episode = null) => {
 export const createUrlQuery = (params) => {
   return queryString.stringify(params);
 };
+

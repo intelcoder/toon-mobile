@@ -4,15 +4,10 @@
 import React, {Component} from 'react';
 import {View, StyleSheet, ToolbarAndroid } from 'react-native';
 import {TabViewAnimated, TabBar} from 'react-native-tab-view';
-import {connect} from 'react-redux';
-
 import ToonGird from '../ToonGrid/ToonGrid';
-import fetchIfNeeded from '../../actions/fetchAction';
-import {createRequestUrl} from '../../utils/index';
-import {urlTypes} from '../../model/data';
 import siteModel from '../../model/siteModel';
 import {weekdays} from '../../utils/index';
-var nativeImageSource = require('nativeImageSource');
+import initializeWrapper from '../InitializeWrapper/InitializeWrapper'
 
 
 const styles = StyleSheet.create({
@@ -27,7 +22,7 @@ const styles = StyleSheet.create({
 });
 
 
-class WebtoonPageContainer extends Component {
+class WebtoonPager extends Component {
   state = {
     index: 0,
     routes: [
@@ -39,41 +34,18 @@ class WebtoonPageContainer extends Component {
       {key: '6', title: '토'},
       {key: '7', title: '일'},
     ],
-    site: this.props.site
+    site: this.props.site,
+    webtoonList: []
   };
 
   componentDidMount() {
     const {site, loginInfo} = this.props;
     const {index} = this.state;
-    setTimeout(() => {
-      this.fetchWebtoonData(site, loginInfo, index);
-    }, 1000)
-
   }
-
-  fetchWebtoonData = (site, loginInfo, index) => {
-    const {dispatch} = this.props;
-    //fetch monday toon list
-    if(loginInfo.hasToken){
-      let requestUrl = createRequestUrl(urlTypes.LIST, site);
-      const {token_type, access_token} = loginInfo.tokenDetail;
-      dispatch(
-        fetchIfNeeded(requestUrl , {
-            method: 'GET',
-            headers: {
-              Authorization: token_type.toLowerCase() + ' ' + access_token
-            }
-          }
-        )
-      )
-    }
-  };
 
   _onActionSelected  = (position) => {
     this.setState({
       site: toolbarActions[position].title.toLowerCase()
-    }, ()=> {
-      this.fetchWebtoonData(this.state.site, this.props.loginInfo, this.state.index)
     });
 
 
@@ -90,11 +62,23 @@ class WebtoonPageContainer extends Component {
     return ({index})=>{
       return <ToonGird
         index={index}
-        webtoonList={webtoonList.filter(webtoon=> webtoon.weekday == weekdays[index])}
+        webtoonList={webtoonList.filter(webtoon => webtoon.weekday == weekdays[index])}
         width={width}
         isFetching={isFetching}
       />
     }
+  };
+
+  getAction = () => {
+    return [
+      {title: 'Naver'},
+      {title: 'Daum'},
+      {title: 'Rezin'},
+      {title: 'Kakao'},
+    ].filter((action) => {
+      if(this.state.site !== action.title.toLowerCase())
+        return action;
+    });
   };
 
   render() {
@@ -111,7 +95,7 @@ class WebtoonPageContainer extends Component {
           onActionSelected={this._onActionSelected}
           titleColor='white'
           subtitleColor='white'
-          actions={toolbarActions}
+          actions={this.getAction()}
         />
         <TabViewAnimated
           style={styles.container}
@@ -125,21 +109,4 @@ class WebtoonPageContainer extends Component {
   }
 }
 
-var toolbarActions = [
-  {title: 'Naver'},
-  {title: 'Daum'},
-  {title: 'Rezin'},
-  {title: 'Kakao'},
-
-];
-
-const mapStateToProps = (state) => {
-  const {loginReducer, fetchReducer} = state;
-  return {
-    loginInfo: loginReducer,
-    webtoonList: fetchReducer.data,
-    isFetching: fetchReducer.isFetching
-  }
-};
-
-export default connect(mapStateToProps)(WebtoonPageContainer);
+export default initializeWrapper(WebtoonPager);

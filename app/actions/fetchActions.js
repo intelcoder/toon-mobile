@@ -46,11 +46,34 @@ const fetchData = (requestUrl, requestData) => {
   }
 };
 
-const fetchIfNeeded = (requestUrl, requestData)=> {
+export const fetchForInit = (fetchList) => {
+  return (dispatch) => {
+    dispatch(fetching());
+    const promises = fetchList.map((el)=> {
+      return fetch(el.requestUrl, el.fetchDetail)
+          .then(response=> {
+            if (response.status == 200) {
+              return response.json();
+            }
+          })
+    });
+    Promise.all(promises)
+        .then((data)=>{
+          return dispatch(fetchSuccess(data))
+        })
+        .catch((err) => {
+          dispatch(fetchFail(err))
+        })
+  }
+};
+
+
+
+const fetchIfNeeded = (requestUrl, fetchDetail)=> {
   return (dispatch, getState) => {
     const {fetchReducer} = getState();
     if (!fetchReducer.isFetching) {
-      dispatch(fetchData(requestUrl, requestData))
+      dispatch(fetchData(requestUrl, fetchDetail))
     }
   }
 };

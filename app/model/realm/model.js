@@ -20,10 +20,11 @@ const create = (state) => {
 
 const bulkCreate = (state) => {
   return (schemaName, listOfData) => {
-    listOfData.forEach((list)=>{
-      state.realm.write(()=> {
+    state.realm.write(()=> {
+      listOfData.forEach((list)=> {
         state.realm.create(schemaName, list);
       });
+      console.log("Done  bulkCreatebulkCreate")
     })
   }
 };

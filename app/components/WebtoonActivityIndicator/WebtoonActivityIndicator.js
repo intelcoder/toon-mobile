@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
 
 WebtoonActivityIndicator.defaultProps = {
   customStyle: {},
-  size: 'small',
-  color: ''
+  size: 'large',
+  color: 'black'
 
 };
