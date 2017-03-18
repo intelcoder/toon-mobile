@@ -24,6 +24,7 @@ const bulkCreate = (state) => {
       listOfData.forEach((list)=> {
         state.realm.create(schemaName, list);
       });
+      console.log("Done  bulkCreatebulkCreate")
     })
   }
 };

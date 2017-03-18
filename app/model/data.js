@@ -10,3 +10,10 @@ export const urlTypes = {
   EPISODE: 'episode',
   TOONIMAGE: 'toonImage'
 };
+
+
+//@todo Add rezin and kakao later
+export const siteList = [
+  'naver',
+  'daum'
+];
