@@ -22,7 +22,7 @@ export default (state = initState, action)=> {
     return Object.assign({},state,{
       isFetching:false,
       isFail : false,
-      data: action.data
+      data: [].concat(...action.data)
     })
 
   }else if(action.type === "FETCH_DATA_FAILURE"){

@@ -11,20 +11,24 @@
 import RNFetchBlob from 'react-native-fetch-blob'
 import Model from '../../model/realm/model';
 
-export default (props) => {
-    //get token from argument
-
-    //send request to get list of webtoons from server
-
-    //once get a list save images into local
-
-    //save data into local storage with path of image
-
-    //when everything is done render webtoonpage with container
-}
+export const saveImageToLocal = () => {
+  const dirs = RNFetchBlob.fs.dirs;
+  return (webtoon) => {
+    return RNFetchBlob
+      .config({
+        path: dirs.DocumentDir + `/${webtoon.site}/${webtoon.toon_id}.jpg`,
+        appendExt: 'jpg',
+      })
+      .fetch('GET', webtoon.thumbnail_url, {})
+      .then((res) => {
+        webtoon.thumbnail_url = res.path();
+        return webtoon;
+      });
+  };
+};
 
 export const saveImageAndReturnPath = async(site, toon) => {
-    let dirs = RNFetchBlob.fs.dirs;
+    const  dirs = RNFetchBlob.fs.dirs;
     return await RNFetchBlob
         .config({
             path: dirs.DocumentDir + `/${site.toLowerCase()}/${toon.toon_id}.jpg`,
@@ -36,9 +40,9 @@ export const saveImageAndReturnPath = async(site, toon) => {
         });
 };
 
-export const saveIntoDatabase = (schema, data) => {
-    const webtoonModel =  Model(schema);
-    webtoonModel.bulkCreate('Webtoon', data);
+export const saveIntoDatabase = (schema, SchemaName, data) => {
+    const webtoonModel = Model(schema);
+    webtoonModel.bulkCreate(SchemaName, data);
 };
 /*
 
