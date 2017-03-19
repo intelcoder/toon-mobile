@@ -65,7 +65,7 @@ export default class Login extends Component {
     }
 
     saveTokenDetailInDb = async (tokenDetail) => {
-      return AsyncStorage.setItem(dataKeys.token, JSON.stringify(tokenDetail));
+      return AsyncStorage.setItem(dataKeys.TOKEN, JSON.stringify(tokenDetail));
     };
 
     handleIdInput = (text) => {
