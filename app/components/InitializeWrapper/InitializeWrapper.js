@@ -5,18 +5,17 @@ import React, {Component} from 'react';
 import {
   View,
   Text,
-  ToastAndroid
+  ToastAndroid,
+AsyncStorage,
+  InteractionManager
 } from 'react-native';
 import {connect} from 'react-redux'
-import flowRight from 'lodash.flowright';
-import {Actions} from 'react-native-router-flux';
 
-import fetchIfNeeded, {fetchForInit} from '../../actions/fetchActions';
-import secret from '../../config/secret';
+import {fetchForInit} from '../../actions/fetchActions';
+
 import {isTokenExpired, createRequestUrl} from '../../utils';
 import {urlTypes, siteList} from '../../model/data';
 import Loading from '../WebtoonActivityIndicator/WebtoonActivityIndicator';
-import Model from '../../model/realm/model';
 import {saveImageToLocal} from './init';
 
 const initializeWrapper = (ComposedComponent) => {
@@ -27,36 +26,33 @@ const initializeWrapper = (ComposedComponent) => {
     };
 
     componentWillMount() {
+      const {login} = this.props;
 
-      const {login, site} = this.props;
-      this.setState({
-        initializing: true
-      });
       if (!this.props.isInitialized) {
-        const loginData = {
-          access_token:"9yBv8nsc67rCuH6YNyzPSFAJZtUOQW",
-          token_type :"Bearer",
-          hasToken: true
-        };
 
-        //fetchForInit
-        const requestList = siteList.map((site)=>{
-          let requestUrl = createRequestUrl(urlTypes.LIST, site);
-          const {token_type, access_token} = loginData;
-          const fetchDetail = {
-            method: 'GET',
-            headers: {
-              Authorization: token_type.toLowerCase() + ' ' + access_token
-            }
-          };
-          return {requestUrl: requestUrl, fetchDetail: fetchDetail};
+        this.setState({
+          initializing: true
+        }, () => {
+          InteractionManager.runAfterInteractions(() => {
+            // ...long-running synchronous task...
+            this.fetchAllWebtoonListFromServer(siteList, login.tokenDetail);
+          });
         });
-        this.props.dispatch(fetchForInit(requestList))
+      } else {
+        AsyncStorage.getItem(this.props.site)
+          .then((w)=>{
+            return JSON.parse(w)
+          })
+          .then((ws) =>
+            this.setState({
+            webtoons:ws
+          }))
+
       }
     }
 
-    fetchWebtoonListFromServer = ({site},{token_type, access_token})=>{
-      const requestList = siteList.map((site)=>{
+    fetchAllWebtoonListFromServer = (siteList, {token_type, access_token})=> {
+      const requestList = siteList.map((site)=> {
         let requestUrl = createRequestUrl(urlTypes.LIST, site);
         const fetchDetail = {
           method: 'GET',
@@ -74,39 +70,82 @@ const initializeWrapper = (ComposedComponent) => {
       return webtoon;
     };
 
-    finalizeInit = (webtoons) => {
-      this.setState({
-        webtoons: webtoons,
-        initializing: false,
-      })
+    finalizeInit = () => {
+      AsyncStorage.getItem(this.props.site)
+        .then((data) => {
+          const webtoons = JSON.parse(data)
+          this.setState({
+            webtoons: webtoons,
+            initializing: false,
+          })
+        })
     };
 
     componentWillReceiveProps(nextProps) {
       const {isFetching, fetchData} = nextProps;
       if (!isFetching && fetchData.length > 0) {
-        const webtonModel = Model(this.props.webtoonRealm);
-        const updatedWebtoon = fetchData
-          .map(this.updateSite)
-          .map(saveImageToLocal());
+        fetchData.forEach((webtoons) => {
+          const updateWebtoon = webtoons
+            .map(this.updateSite)
+            .map(saveImageToLocal());
 
-        Promise.all(updatedWebtoon)
-          .then((webtoons) => {
-            try {
-              webtonModel.bulkCreate("Webtoon", webtoons);
-            } catch (err) {
-              console.log(err)
-              ToastAndroid.show("Fail on init :" + err, ToastAndroid.SHORT);
-            }
-            this.props.updateInitializedState(true);
-            this.finalizeInit()
-          });
+          const finalPromises = Promise.all(updateWebtoon)
+            .then((webtoons)=>{
+              let site = 'naver';
+              if(webtoons[0] && webtoons[0].site) site = webtoons[0].site;
+              return AsyncStorage.setItem(`${site}`, JSON.stringify(webtoons)).then(()=>{
+                return webtoons.map((webtoon) => {
+                  return AsyncStorage.setItem(`${site}:${webtoon.toon_id}`, JSON.stringify(webtoon))
+                });
+              });
+            });
+
+          Promise.all(finalPromises)
+            .then(()=>{
+              this.props.updateInitializedState(true);
+              this.finalizeInit();
+              ToastAndroid.show( "Init finished", ToastAndroid.LONG);
+            })
+            .catch((err)=>{
+              ToastAndroid.show(" Fail to save due to :" + err, ToastAndroid.LONG);
+            })
+
+        });
+
+
+        /*  const updatedWebtoon = fetchData
+            .map(this.updateSite)
+            .map(saveImageToLocal())
+
+
+          Promise.all(updatedWebtoon)
+            .then((webtoons) => {
+              try {
+                console.log(webtoons)
+                AsyncStorage.setItem(`${this.props.site}`, JSON.stringify(webtoons)).then(()=>{});
+
+                //save into local storage
+                this.props.updateInitializedState(true);
+                this.finalizeInit(webtoons)
+              } catch (err) {
+                ToastAndroid.show("Fail on init :" + err, ToastAndroid.LONG);
+              }
+            });*/
       }
     }
-    render() {
-      const canRenderComposedComp = !this.state.initializing && this.state.webtoons.length > 0;
-      return true ? <View style={{flex:1, backgroundColor:'red'}}><Loading animating={true}/></View> :
-        <ComposedComponent {...this.props} webtoonList={this.state.webtoons}/>
+    getContents = (showComponent) => {
+      return showComponent ?
+        <ComposedComponent
+          {...this.props}
+          webtoonList={this.state.webtoons}
+        />
+        : <View style={{flex:1, backgroundColor:'red'}}><Loading animating={true}/></View>
+    };
 
+    render() {
+      console.log(this.state.webtoons)
+      const canRenderComposedComp = !this.state.initializing && this.state.webtoons.length > 0;
+      return this.getContents(canRenderComposedComp)
     }
   }
 

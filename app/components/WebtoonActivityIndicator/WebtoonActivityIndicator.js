@@ -30,6 +30,7 @@ const styles = StyleSheet.create({
   indicatorCenter: {
     justifyContent: 'center',
     alignItems: 'center',
+    flex:1
   },
   fullCenter: {
     flex:1,

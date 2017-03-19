@@ -3,5 +3,5 @@
  */
 
 export default {
-  token: 'TOKEN'
+  TOKEN: 'token'
 }

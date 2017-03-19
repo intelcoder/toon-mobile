@@ -56,7 +56,11 @@ export const fetchForInit = (fetchList) => {
               return response.json();
             }
           })
+          .catch((err)=> {
+            dispatch(fetchFail(err))
+          })
     });
+
     Promise.all(promises)
         .then((data)=>{
           return dispatch(fetchSuccess(data))

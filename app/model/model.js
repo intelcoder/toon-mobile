@@ -8,13 +8,20 @@ const keys = {
   EPISODE: 'episode',
   TOON: 'toon'
 };
+
+
+//key: site - list of webtoon
+//key: site:pk - webtoon detail
+//key: site:pk:ep - list of episode
+//key: site:pk:ep:no - ep detail
+//key: site:pk:ep:no:toon
 const model = (namespace, table) => {
   const baseKey = namespace.concat('.', table);
   let state = {
     namespace,
     table,
     baseKey,
-    separator: '.'
+    separator: ':'
   };
   return {
     save: save(state),
@@ -50,18 +57,7 @@ const getById = (state) => {
   }
 };
 
-/**
- *
- * @param list array of object
- * @param field field name of object
- * @param filter filter string
- * @returns {*}
- */
-export const getByFilter = (field, filter) => {
-  return item => {
-    return item[field] === filter
-  }
-};
+
 
 
 
