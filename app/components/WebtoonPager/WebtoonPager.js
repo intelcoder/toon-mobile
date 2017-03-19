@@ -35,19 +35,13 @@ class WebtoonPager extends Component {
       {key: '7', title: '일'},
     ],
     site: this.props.site,
-    webtoonList: []
+    webtoonList: this.props.webtoonList
   };
-
-  componentDidMount() {
-    const {site, loginInfo} = this.props;
-    const {index} = this.state;
-  }
 
   _onActionSelected  = (position) => {
     this.setState({
       site: toolbarActions[position].title.toLowerCase()
     });
-
 
   };
   _handleChangeTab = (index) => {
