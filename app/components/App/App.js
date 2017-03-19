@@ -8,23 +8,20 @@ import React from 'react';
 import {
     View,
     Dimensions,
-    AsyncStorage
+    AsyncStorage,
+    PermissionsAndroid
 } from 'react-native';
 import {Provider, connect} from 'react-redux'
 import {Actions, Scene, Router} from 'react-native-router-flux';
 import {Navigator} from 'react-native'
-import Realm from 'realm';
 
 import store from '../../store/store';
 import LoginPage from '../LoginPage/LoginPage';
 import WebtoonPager from '../WebtoonPager/WebtoonPager';
 import SitePage from '../SitePage/SitePage';
 import ModelTest from '../ModelTest/ModelTest';
-import {
-    WebtoonSchema,
-    EpisodeSchema,
-    ToonImagesSchema,
-} from '../../model/realm/schema';
+import dataKeys from '../../model/dataKeys'
+
 
 const scenes = Actions.create(
     <Scene key="root">
@@ -38,25 +35,63 @@ const scenes = Actions.create(
 const INIT_STATE_KEY = 'webtoon:initialized';
 
 const ConnectedRouter = connect()(Router);
+const requestReadPermission = async() => {
+    try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+          {
+              'title': 'Cool Photo App Camera Permission',
+              'message': 'Cool Photo App needs access to your camera ' +
+              'so you can take awesome pictures.'
+          }
+        )
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+            console.log("You can use the READ_EXTERNAL_STORAGE")
+        } else {
+            console.log("Camera permission denied")
+        }
+    } catch (err) {
+        console.warn(err)
+    }
+};
+const requestWritePermission = async() => {
+    try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+          {
+              'title': 'Cool Photo App Camera Permission',
+              'message': 'Cool Photo App needs access to your camera ' +
+              'so you can take awesome pictures.'
+          }
+        )
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+            console.log("You can use the WRITE_EXTERNAL_STORAGE")
+        } else {
+            console.log("Camera permission denied")
+        }
+    } catch (err) {
+        console.warn(err)
+    }
+};
 
 export default class App extends React.Component {
 
     state = {
         width: 0,
         height: 0,
-        webtoonRealm: new Realm({schema: [WebtoonSchema, EpisodeSchema, ToonImagesSchema], schemaVersion:3}),
-        isInitialized: false
+        isInitialized: false,
+        tokenDetail: {}
     };
 
-    updateInitializedState = async (initialized :bool) => {
+    updateInitializedState = (initialized :bool) => {
         if(initialized !== null){
-            console.log("test",initialized.toString() )
-            await AsyncStorage.setItem(INIT_STATE_KEY, initialized.toString());
-            return this.setState({
-                isInitialized: initialized
-            })
+            AsyncStorage.setItem(INIT_STATE_KEY, initialized.toString())
+              .then(()=>{
+                  this.setState({
+                      isInitialized: initialized
+                  })
+              });
         }
-
     };
 
     componentWillMount() {
@@ -67,6 +102,21 @@ export default class App extends React.Component {
         });
         this.setInitState();
     }
+    componentDidMount() {
+        requestReadPermission();
+        requestWritePermission();
+
+    }
+
+    validateApiToken = async () => {
+        const tokenInfo = await AsyncStorage.getItem(dataKeys.TOKEN);
+        const tokenDetail = JSON.parse(tokenInfo);
+        if(tokenDetail && tokenDetail.hasToken){
+            this.setState({
+                tokenDetail: tokenDetail
+            })
+        }
+    };
 
     setInitState = async (initState = null) => {
         try {
@@ -90,7 +140,6 @@ export default class App extends React.Component {
                     scenes={scenes}
                     width={this.state.width}
                     height={this.state.height}
-                    webtoonRealm={this.state.webtoonRealm}
                     isInitialized={this.state.isInitialized}
                     updateInitializedState={this.updateInitializedState}
 
