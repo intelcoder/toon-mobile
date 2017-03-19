@@ -14,7 +14,7 @@ export default class ToonCard extends Component {
     return (
       <View style={[styles.cardContainer,{width: width, height: height * 1.2}]}>
         <View style={styles.imageContainer}>
-          <Image style={styles.cardImage} source={{uri: src}} accessibilityLabel={title + ' 사진'} />
+          <Image style={styles.cardImage} source={{uri: "file://" +  src}} accessibilityLabel={title + ' 사진'} />
         </View>
 
         <View style={styles.textContainer}>
