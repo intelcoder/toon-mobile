@@ -27,6 +27,8 @@ const initializeWrapper = (ComposedComponent) => {
 
     componentWillMount() {
       const {login} = this.props;
+
+
       if (!this.props.isInitialized) {
         this.setState({
           initializing: true
@@ -37,16 +39,14 @@ const initializeWrapper = (ComposedComponent) => {
         });
       } else {
         AsyncStorage.getItem(this.props.site)
-          .then((w)=>{
+          .then((w)=> {
             return JSON.parse(w)
           })
-          .then((ws) =>this.setState({webtoons:ws})
-
+          .then((ws) =>this.setState({webtoons: ws})
           )
-          .catch((e)=>{
+          .catch((e)=> {
             console.log(e)
           })
-
       }
     }
 
@@ -79,39 +79,53 @@ const initializeWrapper = (ComposedComponent) => {
           })
         })
     };
+    saveWebtoonsToLocal = async(webtoons) => {
+      //create sites object from siteList
+      let updatedWebtoons;
+      let sites = siteList.reduce((acc, site) => {
+        acc[site] = [];
+        return acc;
+      }, {});
+
+      try {
+        //Update webtoon data and save thumbnail_url to local
+        updatedWebtoons = webtoons
+          .map(this.updateSite)
+          .map(saveImageToLocal());
+        updatedWebtoons = await Promise.all(updatedWebtoons);
+      } catch (err) {
+        return ToastAndroid.show("Error occurred on saving images", ToastAndroid.LONG);
+      }
+
+      // Separate webtoon by site
+      updatedWebtoons.forEach((webtoon) => {
+        sites[webtoon.site].push(webtoon)
+      });
+
+      // Save webtoon data to local using AsyncStorage
+      const savePromises = Object.keys(sites).map((site)=> {
+        return AsyncStorage.setItem(`${site}`, JSON.stringify(sites[site]));
+      });
+
+      try {
+        // If saving did not throw any error, finish initializing
+        await Promise.all(savePromises);
+        this.props.updateInitializedState(true);
+        this.finalizeInit();
+        ToastAndroid.show("Init finished", ToastAndroid.LONG);
+      } catch (err) {
+        ToastAndroid.show(" Fail to save due to :" + err, ToastAndroid.LONG);
+      }
+    };
 
     componentWillReceiveProps(nextProps) {
-      const {isFetching, fetchData} = nextProps;
-      if (!isFetching && fetchData.length > 0) {
-        fetchData.forEach((webtoons) => {
-          const updateWebtoon = webtoons
-            .map(this.updateSite)
-            .map(saveImageToLocal());
-
-          const finalPromises = Promise.all(updateWebtoon)
-            .then((webtoons)=>{
-              let site = 'naver';
-              if(webtoons[0] && webtoons[0].site) site = webtoons[0].site;
-              return AsyncStorage.setItem(`${site}`, JSON.stringify(webtoons)).then(()=>{
-                return webtoons.map((webtoon) => {
-                  return AsyncStorage.setItem(`${site}:${webtoon.toon_id}`, JSON.stringify(webtoon))
-                });
-              });
-            });
-
-          Promise.all(finalPromises)
-            .then(()=>{
-              this.props.updateInitializedState(true);
-              this.finalizeInit();
-              ToastAndroid.show( "Init finished", ToastAndroid.LONG);
-            })
-            .catch((err)=>{
-              ToastAndroid.show(" Fail to save due to :" + err, ToastAndroid.LONG);
-            })
-        });
-
+      const {isFetching, fetchResult} = nextProps;
+      if (!isFetching && fetchResult.data.length > 0) {
+        const webtoons = fetchResult.data;
+        this.saveWebtoonsToLocal(webtoons);
       }
     }
+
     getContents = (showComponent) => {
       return showComponent ?
         <ComposedComponent
@@ -131,7 +145,7 @@ const initializeWrapper = (ComposedComponent) => {
     const {loginReducer, fetchReducer} = state;
     return {
       login: loginReducer,
-      fetchData: fetchReducer.data,
+      fetchResult: fetchReducer,
       isFetching: fetchReducer.isFetching
     }
   };

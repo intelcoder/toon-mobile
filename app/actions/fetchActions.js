@@ -63,7 +63,8 @@ export const fetchForInit = (fetchList) => {
 
     Promise.all(promises)
         .then((data)=>{
-          return dispatch(fetchSuccess(data))
+          const mergeData = [].concat(...data)
+          return dispatch(fetchSuccess(mergeData))
         })
         .catch((err) => {
           dispatch(fetchFail(err))
