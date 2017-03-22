@@ -4,6 +4,7 @@
 import React, {Component} from 'react';
 import {View, StyleSheet, ToolbarAndroid } from 'react-native';
 import {TabViewAnimated, TabBar} from 'react-native-tab-view';
+import {Actions} from 'react-native-router-flux';
 import ToonGird from '../ToonGrid/ToonGrid';
 import siteModel from '../../model/siteModel';
 import {weekdays} from '../../utils/index';
@@ -35,7 +36,7 @@ class WebtoonPager extends Component {
       {key: '7', title: '일'},
     ],
     site: this.props.site,
-    webtoonList: this.props.webtoonList
+    webtoonList: []
   };
 
   _onActionSelected  = (position) => {
@@ -59,8 +60,13 @@ class WebtoonPager extends Component {
         webtoonList={webtoonList.filter(webtoon => webtoon.weekday == weekdays[index])}
         width={width}
         isFetching={isFetching}
+        handleCardClick={this.handleCardClick}
       />
     }
+  };
+
+  handleCardClick = (toonId): void => {
+    if(toonId) Actions.episode({toonId: toonId});
   };
 
   getAction = () => {

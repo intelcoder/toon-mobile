@@ -27,14 +27,11 @@ const initializeWrapper = (ComposedComponent) => {
 
     componentWillMount() {
       const {login} = this.props;
-
       if (!this.props.isInitialized) {
-
         this.setState({
           initializing: true
         }, () => {
           InteractionManager.runAfterInteractions(() => {
-            // ...long-running synchronous task...
             this.fetchAllWebtoonListFromServer(siteList, login.tokenDetail);
           });
         });
@@ -43,10 +40,12 @@ const initializeWrapper = (ComposedComponent) => {
           .then((w)=>{
             return JSON.parse(w)
           })
-          .then((ws) =>
-            this.setState({
-            webtoons:ws
-          }))
+          .then((ws) =>this.setState({webtoons:ws})
+
+          )
+          .catch((e)=>{
+            console.log(e)
+          })
 
       }
     }
@@ -109,28 +108,8 @@ const initializeWrapper = (ComposedComponent) => {
             .catch((err)=>{
               ToastAndroid.show(" Fail to save due to :" + err, ToastAndroid.LONG);
             })
-
         });
 
-
-        /*  const updatedWebtoon = fetchData
-            .map(this.updateSite)
-            .map(saveImageToLocal())
-
-
-          Promise.all(updatedWebtoon)
-            .then((webtoons) => {
-              try {
-                console.log(webtoons)
-                AsyncStorage.setItem(`${this.props.site}`, JSON.stringify(webtoons)).then(()=>{});
-
-                //save into local storage
-                this.props.updateInitializedState(true);
-                this.finalizeInit(webtoons)
-              } catch (err) {
-                ToastAndroid.show("Fail on init :" + err, ToastAndroid.LONG);
-              }
-            });*/
       }
     }
     getContents = (showComponent) => {
@@ -143,7 +122,6 @@ const initializeWrapper = (ComposedComponent) => {
     };
 
     render() {
-      console.log(this.state.webtoons)
       const canRenderComposedComp = !this.state.initializing && this.state.webtoons.length > 0;
       return this.getContents(canRenderComposedComp)
     }

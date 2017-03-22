@@ -52,7 +52,7 @@ export default class ToonGrid extends Component {
   }
 
   render() {
-    const {width} = this.props;
+    const {width, handleCardClick} = this.props;
     return (
       <Animated.View
         style={{
@@ -67,12 +67,11 @@ export default class ToonGrid extends Component {
               flexWrap: 'wrap'}}
             renderRow={(data)=>
               <ToonCard
+                {...data}
                 src={data.thumbnail_url}
-                title={data.title}
-                rating={data.rating}
-                author={data.author}
                 width={width/3}
                 height={width/3}
+                handleCardClick={handleCardClick}
               />
             }
           />
@@ -85,7 +84,8 @@ export default class ToonGrid extends Component {
 ToonGrid.propTypes = {
   webtoonList: PropTypes.array,
   width: PropTypes.number.isRequired,
-  index: PropTypes.number.isRequired
+  index: PropTypes.number.isRequired,
+  handleCardClick: PropTypes.func
 };
 
 ToonGrid.defaultProps = {
@@ -94,5 +94,5 @@ ToonGrid.defaultProps = {
     title:'',
     rating: 0,
     author: '',
-  }]
+  }],
 };
