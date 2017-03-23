@@ -20,12 +20,12 @@ const Title = styled.Text`
   marginBottom: 10
 `;
 
-const EpisodeBox = (width: number, episode: Object) => {
+const EpisodeBox = ({width, height, episode}) => {
   return (
     <View style={[styles.episodeBox, {height: 100, width: width}]}>
       <View style={{flex:1, flexDirection: 'row'}}>
         <View style={styles.imageContainer}>
-          <Image style={styles.image} source={{uri: episode.thumbnail_url, width: 120, height: 100}}/>
+          <Image style={styles.image} source={{uri: episode.thumbnail_url, width: 120, height: 99}}/>
         </View>
         <View style={styles.detailContainer}>
           <Title>{episode.episode_title}</Title>
@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1
   },
   imageContainer: {
-    flex: 0.2
+    flex: 0.2,
   },
   image: {
     resizeMode: 'stretch'

@@ -21,7 +21,7 @@ type Props  = {
 
 const styles = StyleSheet.create({
   episodeList : {
-    flex: 1,
+
   }
 });
 
@@ -32,20 +32,29 @@ export default class EpisodeList extends Component {
   };
   constructor(props: Props){
     super(props);
-    const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 != r2});
+    this.ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 != r2});
     this.state = {
-      episodes: ds.cloneWithRows(this.props.episodes)
+      episodes: this.ds.cloneWithRows(this.props.episodes)
     }
   }
+  componentWillReceiveProps(nextProps){
+    if(this.props.episodes !== nextProps.episodes) {
+      this.setState({
+        episodes:  this.ds.cloneWithRows(nextProps.episodes)
+      })
+    }
+  }
+
   render(){
+    const {width, height} = this.props;
     return (
       <View style={styles.episodeList}>
-        <ListView
-          dataSource={this.state.episodes}
-          renderRow={(episode)=>{
-            return <EpisodeBox width={332} episode={episode}/>
+          <ListView
+            dataSource={this.state.episodes}
+            renderRow={(episode)=>{
+            return <EpisodeBox width={width} height={height} episode={episode}/>
           }}
-        />
+          />
       </View>
     )
   }
