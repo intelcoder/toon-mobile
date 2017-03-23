@@ -36,7 +36,7 @@ class WebtoonPager extends Component {
       {key: '7', title: '일'},
     ],
     site: this.props.site,
-    webtoonList: []
+    webtoonList: [],
   };
 
   _onActionSelected  = (position) => {
@@ -55,6 +55,7 @@ class WebtoonPager extends Component {
 
   _renderScene = ({webtoonList, width, isFetching}) => {
     return ({index})=>{
+
       return <ToonGird
         index={index}
         webtoonList={webtoonList.filter(webtoon => webtoon.weekday == weekdays[index])}
@@ -64,6 +65,9 @@ class WebtoonPager extends Component {
       />
     }
   };
+  shouldComponentUpdate() {
+    return false;
+  }
 
   handleCardClick = (toonId): void => {
     if(toonId) Actions.episode({toonId: toonId});
