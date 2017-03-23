@@ -1,7 +1,7 @@
 # Toon-Mobile
 
 The goal of this project is to create a centeralize webtoon app, which will show all the webtoons from 4 major webtoon sites.
-One of the main feature of this app is scheduled download (Not yet). It will allow you to see your favorite webtoons without internet.  
+One of the main feature of this app will be scheduled download (Not yet). It will allow you to see your favorite webtoons without internet.  
 
 ## Features
 
