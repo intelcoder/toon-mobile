@@ -10,9 +10,9 @@
 
 import RNFetchBlob from 'react-native-fetch-blob'
 
+const dirs = RNFetchBlob.fs.dirs;
 
 export const saveImageToLocal = () => {
-  const dirs = RNFetchBlob.fs.dirs;
   return (webtoon) => {
     return RNFetchBlob
       .config({
@@ -25,4 +25,18 @@ export const saveImageToLocal = () => {
         return webtoon;
       });
   };
+};
+
+
+export const saveToonImagesToLocal = (toonImageObj, toondId, episodeNo) => {
+  return RNFetchBlob
+    .config({
+      path: dirs.DocumentDir + `/${toondId}/${episodeNo}/${toonImageObj.order}.jpg`,
+      appendExt: 'jpg'
+    })
+    .fetch('GET', toonImageObj.image_url, {})
+    .then((res)=>{
+      toonImageObj.image_url = res.path();
+      return toonImageObj;
+    })
 };
