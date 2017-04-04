@@ -46,13 +46,21 @@ export default class EpisodeList extends Component {
   }
 
   render(){
-    const {width, height} = this.props;
+    const {width, height, handleClick} = this.props;
     return (
       <View style={styles.episodeList}>
           <ListView
             dataSource={this.state.episodes}
             renderRow={(episode)=>{
-            return <EpisodeBox width={width} height={height} episode={episode}/>
+            return (
+              <EpisodeBox
+              width={width}
+              height={height}
+              episode={episode}
+              handleClick={handleClick}
+              />
+
+            )
           }}
           />
       </View>

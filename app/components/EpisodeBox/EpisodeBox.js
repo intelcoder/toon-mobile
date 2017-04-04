@@ -8,7 +8,8 @@ import {
   Text,
   StyleSheet,
   Image,
-  Dimensions
+  Dimensions,
+  TouchableNativeFeedback
 } from 'react-native';
 import styled from 'styled-components/native';
 import moment from 'moment';
@@ -20,9 +21,9 @@ const Title = styled.Text`
   marginBottom: 10
 `;
 
-const EpisodeBox = ({width, height, episode}) => {
+const EpisodeBox = ({width, height, episode, handleClick}) => {
   return (
-    <View style={[styles.episodeBox, {height: 100, width: width}]}>
+    <TouchableNativeFeedback style={[styles.episodeBox, {height: 100, width: width}]} onPress={handleClick(episode)}>
       <View style={{flex:1, flexDirection: 'row'}}>
         <View style={styles.imageContainer}>
           <Image style={styles.image} source={{uri: episode.thumbnail_url, width: 120, height: 99}}/>
@@ -33,7 +34,7 @@ const EpisodeBox = ({width, height, episode}) => {
           <Text>{moment(episode.uploaded_at).format('YYYY-MM-DD')}</Text>
         </View>
       </View>
-    </View>
+    </TouchableNativeFeedback>
   )
 };
 

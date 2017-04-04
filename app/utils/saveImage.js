@@ -20,6 +20,6 @@ export const saveToonImageToLocal = (toonImageObj, toonId, episodeNo) => {
       return toonImageObj;
     })
     .catch((e)=>{
-      console.log('error occurend during saving images');
+      console.log(e,e.nativeEvent,'error occurend during saving images');
     })
 };

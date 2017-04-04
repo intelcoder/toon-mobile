@@ -67,9 +67,8 @@ class WebtoonImageListPage extends Component {
     let updatedData = data.map((toonImage)=>{
       return saveToonImageToLocal(toonImage, toonId, episodeNo);
     });
-
+    updatedData =  await Promise.all(updatedData);
     try {
-      updatedData =  await Promise.all(updatedData);
       const saved = await this.model.save(`webtoon:${toonId}:ep:${episodeNo}:toon`, data);
       this.setState({
         toonImageList: updatedData

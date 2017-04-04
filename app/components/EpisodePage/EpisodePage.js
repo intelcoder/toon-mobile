@@ -10,6 +10,8 @@ import {
   StyleSheet
 } from 'react-native';
 import {connect} from 'react-redux';
+import {Actions} from 'react-native-router-flux'
+
 import fetchIfNeeded from '../../actions/fetchActions';
 import EpisodeList from '../EpisodeList/EpisodeList';
 
@@ -38,6 +40,16 @@ class EpisodePage extends Component {
   componentWillReceiveProps(nextProps){
        if(this.props.toonId !== nextProps.toonId) this.fetchEpisode(nextProps);
   }
+  handleClick = (episode) => {
+    return () => {
+      const {toonId} = this.props;
+      Actions.toonImages({
+        episodeNo: episode.no,
+        toonId: toonId
+      })
+    };
+  };
+
   getContents = () => {
     const {fetchResult, width, height} = this.props;
     if(fetchResult.data.episodes && fetchResult.data.episodes.length) {
@@ -46,6 +58,7 @@ class EpisodePage extends Component {
           width={width}
           height={height}
           episodes={fetchResult.data.episodes}
+          handleClick={this.handleClick}
         />
       )
     }
