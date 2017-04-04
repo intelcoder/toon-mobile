@@ -26,17 +26,3 @@ export const saveImageToLocal = () => {
       });
   };
 };
-
-
-export const saveToonImagesToLocal = (toonImageObj, toondId, episodeNo) => {
-  return RNFetchBlob
-    .config({
-      path: dirs.DocumentDir + `/${toondId}/${episodeNo}/${toonImageObj.order}.jpg`,
-      appendExt: 'jpg'
-    })
-    .fetch('GET', toonImageObj.image_url, {})
-    .then((res)=>{
-      toonImageObj.image_url = res.path();
-      return toonImageObj;
-    })
-};
