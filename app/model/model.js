@@ -15,41 +15,32 @@ const keys = {
 //key: site:pk:ep - list of episode
 //key: site:pk:ep:no - ep detail
 //key: site:pk:ep:no:toon
-const model = (namespace, table) => {
-  const baseKey = namespace.concat('.', table);
+const model = () => {
   let state = {
-    namespace,
-    table,
-    baseKey,
-    separator: ':'
+
   };
   return {
     save: save(state),
-    getById: getById(state),
+    getByKey: getByKey(state),
   }
 };
 
-const _setKey = (state, key) => {
-  return state.baseKey.concat(state.separator, key);
-};
 
 const save = (state) => {
-  return async (key, pair) => {
+  return async (key, data) => {
     try {
-      const newKey = _setKey(state, key);
-      const data = JSON.stringify(pair);
-      return await AsyncStorage.setItem(newKey, data);
+      const jsonData = JSON.stringify(data);
+      return AsyncStorage.setItem(key, jsonData);
     } catch(error) {
       return error;
     }
   }
 };
 
-const getById = (state) => {
+const getByKey = (state) => {
   return async (key) => {
     try {
-      const newKey = _setKey(state, key);
-      const data =  await AsyncStorage.getItem(newKey);
+      const data =  await AsyncStorage.getItem(key);
       return JSON.parse(data);
     } catch(error) {
       return error;

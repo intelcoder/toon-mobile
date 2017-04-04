@@ -20,10 +20,10 @@ import LoginPage from '../LoginPage/LoginPage';
 import WebtoonPager from '../WebtoonPager/WebtoonPager';
 import SitePage from '../SitePage/SitePage';
 import EpisodePage from '../EpisodePage/EpisodePage';
+import WebtoonImageListPage from '../WebtoonImageListPage/WebtoonImageListPage';
 
 import ModelTest from '../ModelTest/ModelTest';
 import dataKeys from '../../model/dataKeys'
-
 
 const scenes = Actions.create(
     <Scene key="root">
@@ -32,6 +32,7 @@ const scenes = Actions.create(
         <Scene key="episode" hideNavBar={true} component={EpisodePage}/>
         <Scene key="test" hideNavBar={true} component={ModelTest} title="test"/>
         <Scene key="toonSite" hideNavBar={true} component={SitePage} title="Toon Site"/>
+        <Scene key="toonImages" hideNavBar={true} component={WebtoonImageListPage} title="Toon"/>
     </Scene>
 );
 
