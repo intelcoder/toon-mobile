@@ -118,4 +118,4 @@ export default connect(mapStateToProps)(WebtoonImageListPage);
 WebtoonImageListPage.defaultProps = {
   toonId: '183559',
   episodeNo: '325'
-}
+};

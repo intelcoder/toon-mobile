@@ -11,13 +11,13 @@ import {
   ListView
 } from 'react-native';
 
-class WebtoonView extends Component {
+export default class WebtoonView extends Component {
 
-  constructor(props){
+  constructor(props) {
     super(props);
-    this.ds = new ListView.DataSource({rowHasChanged: (r1, r2)=> r1!=r2})
-    this.state= {
-      dataSource:  this.ds.cloneWithRows(this.getContents())
+    this.ds = new ListView.DataSource({rowHasChanged: (r1, r2)=> r1 != r2});
+    this.state = {
+      dataSource: this.ds.cloneWithRows(this.getContents())
     }
   }
 
@@ -37,13 +37,11 @@ class WebtoonView extends Component {
   render() {
     return (
       <View style={{flex:1}}>
-          <ListView
-            dataSource={this.state.dataSource}
-            renderRow={(d)=>d}
-          />
+        <ListView
+          dataSource={this.state.dataSource}
+          renderRow={(d)=>d}
+        />
       </View>
     )
   }
 }
-
-export default WebtoonView;

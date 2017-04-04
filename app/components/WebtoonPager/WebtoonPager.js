@@ -9,7 +9,7 @@ import ToonGird from '../ToonGrid/ToonGrid';
 import siteModel from '../../model/siteModel';
 import {weekdays} from '../../utils/index';
 import initializeWrapper from '../InitializeWrapper/InitializeWrapper'
-
+import Model from '../../model/model';
 
 const styles = StyleSheet.create({
   container: {
@@ -21,6 +21,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
+
+const toolbarActions = [
+  {title: 'Naver'},
+  {title: 'Daum'},
+];
 
 
 class WebtoonPager extends Component {
@@ -36,15 +41,25 @@ class WebtoonPager extends Component {
       {key: '7', title: '일'},
     ],
     site: this.props.site,
-    webtoonList: [],
+    webtoonList: this.props.webtoonList,
+    toolbarActions: []
   };
 
   _onActionSelected  = (position) => {
-    this.setState({
-      site: toolbarActions[position].title.toLowerCase()
-    });
-
+    const site = this.state.toolbarActions[position].title.toLowerCase();
+    this.setActions(site);
+    this.updateWebtoonList(site)
   };
+
+  updateWebtoonList = async (site) => {
+    const model = Model();
+    const webtoonList = await model.getByKey(site);
+    this.setState({
+      site: site,
+      webtoonList: webtoonList
+    })
+  };
+
   _handleChangeTab = (index) => {
     this.setState({index});
   };
@@ -53,7 +68,7 @@ class WebtoonPager extends Component {
     return <TabBar {...props} />;
   };
 
-  _renderScene = ({webtoonList, width, isFetching}) => {
+  _renderScene = ({webtoonList}, {width, isFetching}) => {
     return ({index})=>{
 
       return <ToonGird
@@ -65,28 +80,34 @@ class WebtoonPager extends Component {
       />
     }
   };
-  shouldComponentUpdate() {
+  shouldComponentUpdate(nextProps, nextState) {
+    const {webtoonList, site, toolbarActions} = this.state;
+    if( webtoonList !== nextState.webtoonList || site !== nextState.site || toolbarActions !== nextState.toolbarActions){
+      return true;
+    }
     return false;
+  }
+
+  componentDidMount() {
+    this.setActions(this.state.site);
   }
 
   handleCardClick = (toonId): void => {
     if(toonId) Actions.episode({toonId: toonId});
   };
 
-  getAction = () => {
-    return [
-      {title: 'Naver'},
-      {title: 'Daum'},
-      {title: 'Rezin'},
-      {title: 'Kakao'},
-    ].filter((action) => {
-      if(this.state.site !== action.title.toLowerCase())
+  setActions = (site) => {
+    const actions = toolbarActions.filter((action) => {
+      if(site !== action.title.toLowerCase())
         return action;
     });
+    this.setState({
+      toolbarActions: actions
+    })
   };
 
   render() {
-    const renderScene = this._renderScene(this.props);
+    const renderScene = this._renderScene(this.state,this.props);
     const site = this.state.site;
     return (
       <View style={{flex:1}}>
@@ -99,7 +120,7 @@ class WebtoonPager extends Component {
           onActionSelected={this._onActionSelected}
           titleColor='white'
           subtitleColor='white'
-          actions={this.getAction()}
+          actions={this.state.toolbarActions}
         />
         <TabViewAnimated
           style={styles.container}
