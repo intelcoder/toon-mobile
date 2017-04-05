@@ -2,7 +2,12 @@
  * Created by fiddlest on 3/2/2017.
  */
 import React, {Component} from 'react';
-import {View, StyleSheet, ToolbarAndroid } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  ToolbarAndroid,
+  AsyncStorage
+} from 'react-native';
 import {TabViewAnimated, TabBar} from 'react-native-tab-view';
 import {Actions} from 'react-native-router-flux';
 import ToonGird from '../ToonGrid/ToonGrid';
@@ -41,7 +46,7 @@ class WebtoonPager extends Component {
       {key: '7', title: '일'},
     ],
     site: this.props.site,
-    webtoonList: this.props.webtoonList,
+    webtoonList: [],
     toolbarActions: []
   };
 
@@ -54,6 +59,7 @@ class WebtoonPager extends Component {
   updateWebtoonList = async (site) => {
     const model = Model();
     const webtoonList = await model.getByKey(site);
+
     this.setState({
       site: site,
       webtoonList: webtoonList
@@ -69,8 +75,8 @@ class WebtoonPager extends Component {
   };
 
   _renderScene = ({webtoonList}, {width, isFetching}) => {
-    return ({index})=>{
 
+    return ({index})=>{
       return <ToonGird
         index={index}
         webtoonList={webtoonList.filter(webtoon => webtoon.weekday == weekdays[index])}
@@ -90,6 +96,7 @@ class WebtoonPager extends Component {
 
   componentDidMount() {
     this.setActions(this.state.site);
+    this.updateWebtoonList(this.props.site)
   }
 
   handleCardClick = (toonId): void => {
@@ -107,7 +114,7 @@ class WebtoonPager extends Component {
   };
 
   render() {
-    const renderScene = this._renderScene(this.state,this.props);
+
     const site = this.state.site;
     return (
       <View style={{flex:1}}>
@@ -122,16 +129,22 @@ class WebtoonPager extends Component {
           subtitleColor='white'
           actions={this.state.toolbarActions}
         />
-        <TabViewAnimated
-          style={styles.container}
-          navigationState={this.state}
-          renderScene={renderScene}
-          renderHeader={this._renderHeader}
-          onRequestChangeTab={this._handleChangeTab}
-        />
+        {
+          this.state.webtoonList.length > 0 && <TabViewAnimated
+            style={styles.container}
+            navigationState={this.state}
+            renderScene={this._renderScene(this.state,this.props)}
+            renderHeader={this._renderHeader}
+            onRequestChangeTab={this._handleChangeTab}
+          />
+        }
+
       </View>
     );
   }
 }
 
+WebtoonPager.defaultProps = {
+  site: 'naver'
+};
 export default initializeWrapper(WebtoonPager);

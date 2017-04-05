@@ -25,11 +25,9 @@ const initializeWrapper = (ComposedComponent) => {
       webtoons: []
     };
 
-    componentWillMount() {
-      const {login, isConnected, isInitialized} = this.props;
-
-
-      if (!isInitialized && isConnected) {
+    componentDidMount() {
+      const {login, isInitialized} = this.props;
+      if (!isInitialized) {
         this.setState({
           initializing: true
         }, () => {
@@ -37,16 +35,6 @@ const initializeWrapper = (ComposedComponent) => {
             this.fetchAllWebtoonListFromServer(siteList, login.tokenDetail);
           });
         });
-      } else if(isInitialized) {
-        AsyncStorage.getItem(this.props.site)
-          .then((w)=> {
-            return JSON.parse(w)
-          })
-          .then((ws) =>this.setState({webtoons: ws})
-          )
-          .catch((e)=> {
-            console.log(e)
-          })
       }
     }
 
@@ -137,7 +125,7 @@ const initializeWrapper = (ComposedComponent) => {
     };
 
     render() {
-      const canRenderComposedComp = !this.state.initializing && this.state.webtoons.length > 0;
+      const canRenderComposedComp = this.props.isInitialized || (!this.state.initializing && this.state.webtoons.length > 0)
       return this.getContents(canRenderComposedComp)
     }
   }
