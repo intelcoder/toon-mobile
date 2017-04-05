@@ -25,6 +25,8 @@ import WebtoonImageListPage from '../WebtoonImageListPage/WebtoonImageListPage';
 
 import ModelTest from '../ModelTest/ModelTest';
 import dataKeys from '../../model/dataKeys'
+import {netState} from '../../model/data';
+import {requestReadPermission, requestWritePermission} from '../../utils/permissionRequest';
 
 const scenes = Actions.create(
   <Scene key="root">
@@ -40,47 +42,8 @@ const scenes = Actions.create(
 const INIT_STATE_KEY = 'webtoon:initialized';
 
 const ConnectedRouter = connect()(Router);
-const requestReadPermission = async() => {
-  try {
-    const granted = await PermissionsAndroid.request(
-      PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-      {
-        'title': 'Read Permission',
-        'message': 'This app requires to access storage'
-      }
-    );
-    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-      console.log("You can use the READ_EXTERNAL_STORAGE")
-    } else {
-      console.log("Camera permission denied")
-    }
-  } catch (err) {
-    console.warn(err)
-  }
-};
-const requestWritePermission = async() => {
-  try {
-    const granted = await PermissionsAndroid.request(
-      PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-      {
-        'title': 'write Permission',
-        'message': 'This app requires to access storage'
-      }
-    );
-    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-      console.log("You can use the WRITE_EXTERNAL_STORAGE")
-    } else {
-      console.log("Camera permission denied")
-    }
-  } catch (err) {
-    console.warn(err)
-  }
-};
 
-const netState = {
-  ONLINE: 'online',
-  OFFLINE: 'offline'
-};
+
 
 export default class App extends React.Component {
 
@@ -93,6 +56,22 @@ export default class App extends React.Component {
 
   };
 
+  componentDidMount() {
+    requestReadPermission();
+    requestWritePermission();
+  }
+
+  componentWillMount() {
+    const {width, height} = Dimensions.get('window');
+    this.setState({
+      width: width,
+      height: height
+    });
+    this.setInitState();
+    this.initNetState();
+
+  }
+
   updateInitializedState = (initialized:bool) => {
     if (initialized !== null) {
       AsyncStorage.setItem(INIT_STATE_KEY, initialized.toString())
@@ -102,12 +81,6 @@ export default class App extends React.Component {
           })
         });
     }
-  };
-
-  handleFirstConnectivityChange = (reach) => {
-    this.setState({
-      netInfo: reach
-    })
   };
 
   componentWillUnmount() {
@@ -124,18 +97,7 @@ export default class App extends React.Component {
     })
   };
 
-  componentWillMount() {
-    const {width, height} = Dimensions.get('window');
 
-
-    this.setState({
-      width: width,
-      height: height
-    });
-    this.setInitState();
-    this.initNetState();
-
-  }
 
   initNetState = () => {
     NetInfo.isConnected.fetch().then(isConnected => {
@@ -149,11 +111,7 @@ export default class App extends React.Component {
     );
   };
 
-  componentDidMount() {
-    requestReadPermission();
-    requestWritePermission();
 
-  }
 
   validateApiToken = async() => {
     const tokenInfo = await AsyncStorage.getItem(dataKeys.TOKEN);

@@ -17,3 +17,8 @@ export const siteList = [
   'naver',
   'daum'
 ];
+
+export const netState = {
+  ONLINE: 'online',
+  OFFLINE: 'offline'
+};
