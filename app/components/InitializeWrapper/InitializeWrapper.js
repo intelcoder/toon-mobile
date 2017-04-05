@@ -26,10 +26,10 @@ const initializeWrapper = (ComposedComponent) => {
     };
 
     componentWillMount() {
-      const {login} = this.props;
+      const {login, isConnected, isInitialized} = this.props;
 
 
-      if (!this.props.isInitialized) {
+      if (!isInitialized && isConnected) {
         this.setState({
           initializing: true
         }, () => {
@@ -37,7 +37,7 @@ const initializeWrapper = (ComposedComponent) => {
             this.fetchAllWebtoonListFromServer(siteList, login.tokenDetail);
           });
         });
-      } else {
+      } else if(isInitialized) {
         AsyncStorage.getItem(this.props.site)
           .then((w)=> {
             return JSON.parse(w)
@@ -79,6 +79,7 @@ const initializeWrapper = (ComposedComponent) => {
           })
         })
     };
+
     saveWebtoonsToLocal = async(webtoons) => {
       //create sites object from siteList
       let updatedWebtoons;

@@ -1,6 +1,9 @@
 /**
  * Created by fiddlest on 4/5/2017.
  */
+import { PermissionsAndroid } from 'react-native';
+
+
 export const requestReadPermission = async() => {
   try {
     const granted = await PermissionsAndroid.request(

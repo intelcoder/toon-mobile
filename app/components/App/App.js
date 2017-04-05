@@ -9,7 +9,6 @@ import {
   View,
   Dimensions,
   AsyncStorage,
-  PermissionsAndroid,
   NetInfo
 } from 'react-native';
 import {Provider, connect} from 'react-redux'
@@ -52,13 +51,14 @@ export default class App extends React.Component {
     height: 0,
     isInitialized: false,
     tokenDetail: {},
-    netState: netState.ONLINE
+    isConnected: true
 
   };
 
   componentDidMount() {
     requestReadPermission();
     requestWritePermission();
+    this.initNetState();
   }
 
   componentWillMount() {
@@ -68,7 +68,6 @@ export default class App extends React.Component {
       height: height
     });
     this.setInitState();
-    this.initNetState();
 
   }
 
@@ -93,7 +92,7 @@ export default class App extends React.Component {
 
   handleFirstConnectivityChange = (isConnected) => {
     this.setState({
-      netState: isConnected
+      isConnected: isConnected
     })
   };
 
@@ -102,7 +101,11 @@ export default class App extends React.Component {
   initNetState = () => {
     NetInfo.isConnected.fetch().then(isConnected => {
       this.setState({
-        netState: isConnected
+        isConnected: isConnected
+      }, () => {
+        if(!isConnected) {
+          Actions.webtoon({site:'naver'});
+        }
       })
     });
     NetInfo.isConnected.addEventListener(
@@ -146,7 +149,7 @@ export default class App extends React.Component {
           width={this.state.width}
           height={this.state.height}
           isInitialized={this.state.isInitialized}
-          netState={this.state.netState}
+          netState={this.state.isConnected}
           updateInitializedState={this.updateInitializedState}
 
         />
