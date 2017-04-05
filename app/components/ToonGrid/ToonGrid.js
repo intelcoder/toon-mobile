@@ -38,7 +38,6 @@ export default class ToonGrid extends Component {
         fadeIn: new Animated.Value(0)
       })
     }
-
     if(this.props.webtoonList !== nextProps.webtoonList){
       const ds = new ListView.DataSource({rowHasChanged : (r1, r2) => r1!=r2});
       this.setState({

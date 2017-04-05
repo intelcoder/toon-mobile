@@ -26,9 +26,11 @@ import ModelTest from '../ModelTest/ModelTest';
 import dataKeys from '../../model/dataKeys'
 import {netState} from '../../model/data';
 import {requestReadPermission, requestWritePermission} from '../../utils/permissionRequest';
+import Home from '../Home/Home';
 
 const scenes = Actions.create(
   <Scene key="root">
+    <Scene key="home" component={Home} hideNavBar={true} title="Home"/>
     <Scene key="login" component={LoginPage} title="Login"/>
     <Scene key="webtoon" hideNavBar={true} component={WebtoonPager}/>
     <Scene key="episode" hideNavBar={true} component={EpisodePage}/>
@@ -39,7 +41,6 @@ const scenes = Actions.create(
 );
 
 const INIT_STATE_KEY = 'webtoon:initialized';
-
 const ConnectedRouter = connect()(Router);
 
 
@@ -49,16 +50,16 @@ export default class App extends React.Component {
   state = {
     width: 0,
     height: 0,
-    isInitialized: false,
+    isInitialized: null,
     tokenDetail: {},
-    isConnected: true
-
+    isConnected: null,
   };
 
   componentDidMount() {
     requestReadPermission();
     requestWritePermission();
     this.initNetState();
+    this.setInitState();
   }
 
   componentWillMount() {
@@ -67,7 +68,6 @@ export default class App extends React.Component {
       width: width,
       height: height
     });
-    this.setInitState();
 
   }
 
@@ -97,15 +97,10 @@ export default class App extends React.Component {
   };
 
 
-
   initNetState = () => {
     NetInfo.isConnected.fetch().then(isConnected => {
       this.setState({
         isConnected: isConnected
-      }, () => {
-        if(!isConnected) {
-          Actions.webtoon({site:'naver'});
-        }
       })
     });
     NetInfo.isConnected.addEventListener(
@@ -113,8 +108,6 @@ export default class App extends React.Component {
       this.handleFirstConnectivityChange
     );
   };
-
-
 
   validateApiToken = async() => {
     const tokenInfo = await AsyncStorage.getItem(dataKeys.TOKEN);
@@ -140,21 +133,35 @@ export default class App extends React.Component {
       console.log("test", error)
     }
   };
+  getContents = () => {
+    const {isInitialized, isConnected} = this.state;
+    const show = isConnected !==null && isInitialized !== null;
+    if(show){
+      return (
+        <Provider store={store}>
+          <ConnectedRouter
+            scenes={scenes}
+            width={this.state.width}
+            height={this.state.height}
+            isInitialized={this.state.isInitialized}
+            isConnected={this.state.isConnected}
+            updateInitializedState={this.updateInitializedState}
+          />
+        </Provider>
+      )
+    }else {
+      return <View style={{backgroundColor:'black'}}></View>
+    }
+  };
 
   render() {
     return (
-      <Provider store={store}>
-        <ConnectedRouter
-          scenes={scenes}
-          width={this.state.width}
-          height={this.state.height}
-          isInitialized={this.state.isInitialized}
-          netState={this.state.isConnected}
-          updateInitializedState={this.updateInitializedState}
+      <View style={{flex:1}}>
+        {
 
-        />
-      </Provider>
-
+          this.getContents()
+        }
+      </View>
     )
   }
 }

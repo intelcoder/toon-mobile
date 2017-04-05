@@ -30,7 +30,7 @@ export default class ToonCard extends Component {
 
 ToonCard.propTypes = {
   src: PropTypes.string.isRequired,
-  rating: PropTypes.number.isRequired,
+  rating: PropTypes.number,
   title: PropTypes.string.isRequired,
   width: PropTypes.number.isRequired,
   height: PropTypes.number.isRequired
