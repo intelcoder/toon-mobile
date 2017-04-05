@@ -9,7 +9,8 @@ import {
     View,
     Dimensions,
     AsyncStorage,
-    PermissionsAndroid
+    PermissionsAndroid,
+    NetInfo
 } from 'react-native';
 import {Provider, connect} from 'react-redux'
 import {Actions, Scene, Router} from 'react-native-router-flux';
@@ -78,13 +79,21 @@ const requestWritePermission = async() => {
     }
 };
 
+const internetState = {
+  NONE: 'NONE',
+  WIFI: 'WIFI',
+  MOBILE: 'MOBILE'
+};
+
 export default class App extends React.Component {
 
     state = {
         width: 0,
         height: 0,
         isInitialized: false,
-        tokenDetail: {}
+        tokenDetail: {},
+        netInfo: internetState.NONE
+
     };
 
     updateInitializedState = (initialized :bool) => {
@@ -107,6 +116,9 @@ export default class App extends React.Component {
         this.setInitState();
     }
     componentDidMount() {
+        NetInfo.fetch().done((reach) => {
+          console.log('Initial: ' + reach);
+        });
         requestReadPermission();
         requestWritePermission();
 
