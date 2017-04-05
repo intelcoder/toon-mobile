@@ -45,11 +45,10 @@ const requestReadPermission = async() => {
     const granted = await PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
       {
-        'title': 'Cool Photo App Camera Permission',
-        'message': 'Cool Photo App needs access to your camera ' +
-        'so you can take awesome pictures.'
+        'title': 'Read Permission',
+        'message': 'This app requires to access storage'
       }
-    )
+    );
     if (granted === PermissionsAndroid.RESULTS.GRANTED) {
       console.log("You can use the READ_EXTERNAL_STORAGE")
     } else {
@@ -64,11 +63,10 @@ const requestWritePermission = async() => {
     const granted = await PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
       {
-        'title': 'Cool Photo App Camera Permission',
-        'message': 'Cool Photo App needs access to your camera ' +
-        'so you can take awesome pictures.'
+        'title': 'write Permission',
+        'message': 'This app requires to access storage'
       }
-    )
+    );
     if (granted === PermissionsAndroid.RESULTS.GRANTED) {
       console.log("You can use the WRITE_EXTERNAL_STORAGE")
     } else {
