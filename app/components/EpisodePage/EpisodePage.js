@@ -23,6 +23,10 @@ type Props = {
 
 class EpisodePage extends Component {
 
+  state = {
+    episodeList: []
+  };
+
   componentDidMount(){
     this.fetchEpisode(this.props);
   }
@@ -38,7 +42,10 @@ class EpisodePage extends Component {
   };
 
   componentWillReceiveProps(nextProps){
+    const {fetchResult} = nextProps;
+    const episodes = fetchResult.data.episodes;
        if(this.props.toonId !== nextProps.toonId) this.fetchEpisode(nextProps);
+       if(episodes  && episodes.length) this.getContents(episodes)
   }
   handleClick = (episode) => {
     return () => {
@@ -50,25 +57,25 @@ class EpisodePage extends Component {
     };
   };
 
-  getContents = () => {
-    const {fetchResult, width, height} = this.props;
-    if(fetchResult.data.episodes && fetchResult.data.episodes.length) {
-      return (
-        <EpisodeList
-          width={width}
-          height={height}
-          episodes={fetchResult.data.episodes}
-          handleClick={this.handleClick}
-        />
-      )
-    }
+  getContents = (episodes) => {
+      this.setState({
+        episodeList: episodes
+      });
   };
 
   render() {
+    const {width, height} = this.props;
     return (
       <View style={{flex: 1}}>
         {
-          this.getContents()
+          this.state.episodeList.length > 0 && (
+            <EpisodeList
+              width={width}
+              height={height}
+              episodes={this.state.episodeList}
+              handleClick={this.handleClick}
+            />
+          )
         }
       </View>
     )
