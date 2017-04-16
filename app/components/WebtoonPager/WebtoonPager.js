@@ -14,7 +14,8 @@ import ToonGird from '../ToonGrid/ToonGrid';
 import siteModel from '../../model/siteModel';
 import {weekdays} from '../../utils/index';
 import initializeWrapper from '../InitializeWrapper/InitializeWrapper'
-import Model from '../../model/model';
+import Model, {defaultModel} from '../../model/model';
+
 
 const styles = StyleSheet.create({
   container: {
@@ -57,13 +58,18 @@ class WebtoonPager extends Component {
   };
 
   updateWebtoonList = async (site) => {
-    const model = Model();
-    const webtoonList = await model.getByKey(site);
 
-    this.setState({
-      site: site,
-      webtoonList: webtoonList
-    })
+    try {
+      const webtoonIds = await defaultModel.getByKey(site);
+      const webtoons = await defaultModel.getAllWebtoonInSite(site, webtoonIds);
+      this.setState({
+        site: site,
+        webtoonList: webtoons
+      })
+    }catch(e){
+      console.log("updateWebtoonList error" ,e)
+    }
+
   };
 
   _handleChangeTab = (index) => {
