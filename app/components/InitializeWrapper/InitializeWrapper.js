@@ -13,10 +13,11 @@ import {connect} from 'react-redux'
 
 import {fetchForInit} from '../../actions/fetchActions';
 
-import {isTokenExpired, createRequestUrl} from '../../utils';
+import {isTokenExpired, createRequestUrl, extractValueFromObjArray} from '../../utils';
 import {urlTypes, siteList} from '../../model/data';
 import Loading from '../WebtoonActivityIndicator/WebtoonActivityIndicator';
 import {saveImageToLocal} from './init';
+import {defaultModel} from '../../model/model';
 
 const initializeWrapper = (ComposedComponent) => {
   class InitializeWrapper extends Component {
@@ -57,15 +58,19 @@ const initializeWrapper = (ComposedComponent) => {
       return webtoon;
     };
 
-    finalizeInit = () => {
-      AsyncStorage.getItem(this.props.site)
-        .then((data) => {
-          const webtoons = JSON.parse(data)
-          this.setState({
-            webtoons: webtoons,
-            initializing: false,
-          })
+    finalizeInit = async () => {
+      try {
+        const webtoonIds = await defaultModel.getByKey('naver');
+        const result = await defaultModel.getAllWebtoonInSite('naver', webtoonIds);
+        this.setState({
+          webtoons: result,
+          initializing: false
+        }, () => {
+          ToastAndroid.show("Init finished", ToastAndroid.LONG);
         })
+      }catch(e){
+        console.log('InitializeWrapper - finalize error', e)
+      }
     };
 
     saveWebtoonsToLocal = async(webtoons) => {
@@ -93,15 +98,21 @@ const initializeWrapper = (ComposedComponent) => {
 
       // Save webtoon data to local using AsyncStorage
       const savePromises = Object.keys(sites).map((site)=> {
-        return AsyncStorage.setItem(`${site}`, JSON.stringify(sites[site]));
-      });
-
+        const toonids = extractValueFromObjArray(sites[site], 'toon_id');
+        defaultModel.save(site, toonids);
+        return sites[site].map((webtoon) => {
+          const key = [site,webtoon.toon_id].join(':');
+          return defaultModel.save(key, webtoon);
+        });
+      })
+        .reduce((acc, promises) => {
+          return acc.concat(promises)
+        }, []);
       try {
         // If saving did not throw any error, finish initializing
         await Promise.all(savePromises);
         this.props.updateInitializedState(true);
         this.finalizeInit();
-        ToastAndroid.show("Init finished", ToastAndroid.LONG);
       } catch (err) {
         ToastAndroid.show(" Fail to save due to :" + err, ToastAndroid.LONG);
       }
@@ -125,7 +136,7 @@ const initializeWrapper = (ComposedComponent) => {
     };
 
     render() {
-      const canRenderComposedComp = this.props.isInitialized || (!this.state.initializing && this.state.webtoons.length > 0)
+      const canRenderComposedComp =this.props.getInitializedState() || (!this.state.initializing && this.state.webtoons.length > 0);
       return this.getContents(canRenderComposedComp)
     }
   }

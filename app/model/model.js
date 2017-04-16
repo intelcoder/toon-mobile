@@ -22,6 +22,7 @@ const model = () => {
   return {
     save: save(state),
     getByKey: getByKey(state),
+    getAllWebtoonInSite: getAllWebtoonInSite
   }
 };
 
@@ -48,6 +49,18 @@ const getByKey = (state) => {
   }
 };
 
+const getAllWebtoonInSite = async (site, webtoonIds) => {
+  const pWebtoons =  webtoonIds.map((webtoonId) => {
+    const key = [site, webtoonId].join(':');
+    return model().getByKey(key);
+  });
+  try {
+   return  await Promise.all(pWebtoons)
+  }catch(e){
+    console.log('getAllWebtoonInSite error ', e)
+  }
+
+};
 
 const isExist = async (key) => {
   const result = await AsyncStorage.getItem(key);
@@ -56,6 +69,8 @@ const isExist = async (key) => {
 
 
 
+
+export const defaultModel = model();
 
 export default model;
 

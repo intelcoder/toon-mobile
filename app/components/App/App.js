@@ -96,6 +96,9 @@ export default class App extends React.Component {
     })
   };
 
+  getInitializedState = () => {
+    return this.state.isInitialized;
+  };
 
   initNetState = () => {
     NetInfo.isConnected.fetch().then(isConnected => {
@@ -146,6 +149,7 @@ export default class App extends React.Component {
             isInitialized={this.state.isInitialized}
             isConnected={this.state.isConnected}
             updateInitializedState={this.updateInitializedState}
+            getInitializedState={this.getInitializedState}
           />
         </Provider>
       )
