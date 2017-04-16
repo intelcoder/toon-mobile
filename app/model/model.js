@@ -10,8 +10,8 @@ const keys = {
 };
 
 
-//key: site - list of webtoon
-//key: site:pk - webtoon detail
+//key: site - list of webtoon id
+//key: site:pk - webtoon detail of webtoon
 //key: site:pk:ep - list of episode
 //key: site:pk:ep:no - ep detail
 //key: site:pk:ep:no:toon
@@ -48,6 +48,11 @@ const getByKey = (state) => {
   }
 };
 
+
+const isExist = async (key) => {
+  const result = await AsyncStorage.getItem(key);
+  return result !== null;
+};
 
 
 

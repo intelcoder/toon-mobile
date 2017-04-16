@@ -16,6 +16,15 @@ export const isTokenExpired = (tokenExpireAt, expiresIn) => {
   return true;
 };
 
+/**
+ * @todo check server as well
+ * @param login login reducer
+ */
+export const isTokenValid = (login) => {
+  if(!login.hasToken) return false;
+  if(isTokenExpired(login.tokenReceivedAt, login.tokenDetail.expires_in)) return false;
+  return true;
+};
 
 
 export const indexToweekday = (index) => {
@@ -59,3 +68,10 @@ export const createUrlQuery = (params) => {
   return queryString.stringify(params);
 };
 
+
+export const extractValueFromObjArray = (array, fieldName) => {
+  return array.reduce((acc, item)=>{
+    if(item[fieldName]) acc.push(item[fieldName]);
+    return acc;
+  }, [])
+};

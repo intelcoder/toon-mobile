@@ -44,7 +44,7 @@ export default class Login extends Component {
           this.saveTokenDetailInDb(tokenDetail)
             .then(() => {
               setTimeout(()=>{
-                Actions.webtoon({site:'naver'});
+                Actions.pop()
               },300);
 
             })
