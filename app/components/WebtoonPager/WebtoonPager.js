@@ -100,7 +100,7 @@ class WebtoonPager extends Component {
   }
 
   handleCardClick = (toonId): void => {
-    if(toonId) Actions.episode({toonId: toonId});
+    if(toonId) Actions.episode({site: this.state.site, toonId: toonId});
   };
 
   setActions = (site) => {
