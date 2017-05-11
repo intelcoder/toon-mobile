@@ -51,7 +51,7 @@ export default class ToonGrid extends Component {
   }
 
   render() {
-    const {width, handleCardClick} = this.props;
+    const {width, handleCardClick, favoriteSelectActive} = this.props;
     return (
       <Animated.View
         style={{

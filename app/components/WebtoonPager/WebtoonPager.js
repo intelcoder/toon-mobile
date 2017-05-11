@@ -11,11 +11,14 @@ import {
 import {TabViewAnimated, TabBar} from 'react-native-tab-view';
 import {Actions} from 'react-native-router-flux';
 import ToonGird from '../ToonGrid/ToonGrid';
-import siteModel from '../../model/siteModel';
-import {weekdays} from '../../utils/index';
+import siteModel from 'model/siteModel';
+import {weekdays} from 'utils/index';
 import initializeWrapper from '../InitializeWrapper/InitializeWrapper'
-import Model, {defaultModel} from '../../model/model';
+import Model, {defaultModel} from '../../model/model'
 
+
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
+import {siteList} from 'model/data';
 
 const styles = StyleSheet.create({
   container: {
@@ -31,6 +34,11 @@ const styles = StyleSheet.create({
 const toolbarActions = [
   {title: 'Naver'},
   {title: 'Daum'},
+  {
+    title: 'Like',
+    show: 'always',
+    iconName: 'favorite'
+  }
 ];
 
 
@@ -48,13 +56,20 @@ class WebtoonPager extends Component {
     ],
     site: this.props.site,
     webtoonList: [],
-    toolbarActions: []
+    toolbarActions: [],
+    favoriteSelectActive: false
   };
 
   _onActionSelected  = (position) => {
-    const site = this.state.toolbarActions[position].title.toLowerCase();
-    this.setActions(site);
-    this.updateWebtoonList(site)
+    const actionTitle = toolbarActions[position].title.toLowerCase();
+    if(siteList.indexOf(actionTitle) > -1 && this.state.site !== actionTitle){
+      return this.updateWebtoonList(actionTitle)
+    }
+    if(actionTitle === 'like'){
+      this.setState({
+        favoriteSelectActive: !this.state.favoriteSelectActive
+      })
+    }
   };
 
   updateWebtoonList = async (site) => {
@@ -80,33 +95,38 @@ class WebtoonPager extends Component {
     return <TabBar {...props} />;
   };
 
-  _renderScene = ({webtoonList}, {width, isFetching}) => {
-
+  _renderScene = ({webtoonList, favoriteSelectActive}, {width, isFetching}) => {
     return ({index})=>{
       return <ToonGird
         index={index}
         webtoonList={webtoonList.filter(webtoon => webtoon.weekday == weekdays[index])}
         width={width}
+        favoriteSelectActive={favoriteSelectActive}
         isFetching={isFetching}
         handleCardClick={this.handleCardClick}
       />
     }
   };
   shouldComponentUpdate(nextProps, nextState) {
-    const {webtoonList, site, toolbarActions} = this.state;
-    if( webtoonList !== nextState.webtoonList || site !== nextState.site || toolbarActions !== nextState.toolbarActions){
+    const {webtoonList, site, favoriteSelectActive} = this.state;
+    if(
+      webtoonList !== nextState.webtoonList ||
+      site !== nextState.site ||
+      favoriteSelectActive !== nextState.favoriteSelectActive){
       return true;
     }
     return false;
   }
 
   componentDidMount() {
-    this.setActions(this.state.site);
+    //this.setActions(this.state.site);
     this.updateWebtoonList(this.props.site)
   }
 
   handleCardClick = (toonId): void => {
-    if(toonId) Actions.episode({site: this.state.site, toonId: toonId});
+    if(!this.state.favoriteSelectActive && toonId){
+      Actions.episode({site: this.state.site, toonId: toonId});
+    }
   };
 
   setActions = (site) => {
@@ -124,7 +144,7 @@ class WebtoonPager extends Component {
     const site = this.state.site;
     return (
       <View style={{flex:1}}>
-        <ToolbarAndroid
+        <MaterialIcon.ToolbarAndroid
           title={site.toUpperCase()}
           style={{
             height: 56,
@@ -133,7 +153,7 @@ class WebtoonPager extends Component {
           onActionSelected={this._onActionSelected}
           titleColor='white'
           subtitleColor='white'
-          actions={this.state.toolbarActions}
+          actions={toolbarActions}
         />
         {
           this.state.webtoonList.length > 0 && <TabViewAnimated
