@@ -57,7 +57,8 @@ class WebtoonPager extends Component {
     site: this.props.site,
     webtoonList: [],
     toolbarActions: [],
-    favoriteSelectActive: false
+    favoriteSelectActive: false,
+    favoriteSelected: []
   };
 
   _onActionSelected  = (position) => {
@@ -124,8 +125,17 @@ class WebtoonPager extends Component {
   }
 
   handleCardClick = (toonId): void => {
-    if(!this.state.favoriteSelectActive && toonId){
+    const {favoriteSelectActive} = this.state
+    if(!favoriteSelectActive && toonId){
       Actions.episode({site: this.state.site, toonId: toonId});
+    }else if(favoriteSelectActive && toonId){
+      if(this.state.favoriteSelected.indexOf(toonId) < 0){
+        this.setState({
+          favoriteSelected: this.state.favoriteSelected.concat(toonId)
+        });
+      }
+
+
     }
   };
 

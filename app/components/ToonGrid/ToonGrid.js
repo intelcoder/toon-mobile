@@ -68,6 +68,7 @@ export default class ToonGrid extends Component {
               <ToonCard
                 {...data}
                 src={data.thumbnail_url}
+                favoriteSelectActive={favoriteSelectActive}
                 width={width/3}
                 height={width/3}
                 handleCardClick={handleCardClick}
