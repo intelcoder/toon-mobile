@@ -75,7 +75,6 @@ class WebtoonPager extends Component {
         .map((w)=> w.toon_id);
 
       if(this.state.favoriteSelectActive){
-        console.log(this.state.favoriteSelected)
         //need to update favorite state on local and server
       }
       this.setState({
