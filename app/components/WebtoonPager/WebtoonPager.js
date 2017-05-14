@@ -64,10 +64,22 @@ class WebtoonPager extends Component {
   _onActionSelected  = (position) => {
     const actionTitle = toolbarActions[position].title.toLowerCase();
     if(siteList.indexOf(actionTitle) > -1 && this.state.site !== actionTitle){
+      //Turn off favorite selection mode
+      this.setState({ favoriteSelectActive: false});
       return this.updateWebtoonList(actionTitle)
     }
     if(actionTitle === 'like'){
+      const {webtoonList, site } = this.state;
+      const favorites = webtoonList
+        .filter((w)=> (w.site == site && w.favorite ))
+        .map((w)=> w.toon_id);
+
+      if(this.state.favoriteSelectActive){
+        console.log(this.state.favoriteSelected)
+        //need to update favorite state on local and server
+      }
       this.setState({
+        favoriteSelected: this.state.favoriteSelected.concat(favorites),
         favoriteSelectActive: !this.state.favoriteSelectActive
       })
     }
@@ -128,14 +140,14 @@ class WebtoonPager extends Component {
     const {favoriteSelectActive} = this.state
     if(!favoriteSelectActive && toonId){
       Actions.episode({site: this.state.site, toonId: toonId});
-    }else if(favoriteSelectActive && toonId){
-      if(this.state.favoriteSelected.indexOf(toonId) < 0){
-        this.setState({
-          favoriteSelected: this.state.favoriteSelected.concat(toonId)
-        });
-      }
-
-
+    }else if(favoriteSelectActive && toonId) {
+      const index = this.state.favoriteSelected.indexOf(toonId);
+      let selectedIds = [];
+      if (index < 0) selectedIds = this.state.favoriteSelected.concat(toonId);
+      else selectedIds = this.state.favoriteSelected.filter((id)=> id !== toonId);
+      this.setState({
+        favoriteSelected: selectedIds
+      })
     }
   };
 
